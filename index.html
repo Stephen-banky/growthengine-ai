@@ -2732,7 +2732,13 @@
         // ========== API CONFIGURATION ==========
         const API_BASE = window.location.origin + '/api';
         let authToken = localStorage.getItem('ge_token');
-        let currentUser = JSON.parse(localStorage.getItem('ge_user') || 'null');
+        let currentUser = null;
+        try {
+            const savedUser = localStorage.getItem('ge_user');
+            if (savedUser && savedUser !== 'undefined' && savedUser !== 'null') {
+                currentUser = JSON.parse(savedUser);
+            }
+        } catch (e) { /* ignore parse errors */ }
         let isGuestMode = localStorage.getItem('ge_guest_mode') === 'true';
 
         // ========== API CALL HELPER ==========
@@ -2746,8 +2752,12 @@
             try {
                 const res = await fetch(API_BASE + endpoint, opts);
                 if (!res.ok) {
-                    const errorData = await res.json();
-                    throw new Error(errorData.message || 'API Error');
+                    let errorMsg = 'API Error';
+                    try {
+                        const errorData = await res.json();
+                        errorMsg = errorData.error || errorData.message || errorMsg;
+                    } catch (e) { /* non-JSON error response */ }
+                    throw new Error(errorMsg);
                 }
                 return await res.json();
             } catch (error) {
@@ -2774,7 +2784,7 @@
             try {
                 const data = await apiCall('/auth/login', 'POST', { email, password });
                 authToken = data.token;
-                currentUser = data.user;
+                currentUser = data.user || { name: email.split('@')[0], email };
                 localStorage.setItem('ge_token', authToken);
                 localStorage.setItem('ge_user', JSON.stringify(currentUser));
                 hideAuthModal();
@@ -2789,7 +2799,7 @@
             try {
                 const data = await apiCall('/auth/register', 'POST', { name, email, password });
                 authToken = data.token;
-                currentUser = data.user;
+                currentUser = data.user || { name, email };
                 localStorage.setItem('ge_token', authToken);
                 localStorage.setItem('ge_user', JSON.stringify(currentUser));
                 hideAuthModal();
@@ -2950,12 +2960,13 @@
                 document.getElementById('result-headline').textContent = data.headline || 'N/A';
                 document.getElementById('result-body').textContent = data.body || 'N/A';
                 document.getElementById('result-cta').textContent = data.cta || 'N/A';
-                document.getElementById('result-hashtags').textContent = data.hashtags || 'N/A';
-                document.getElementById('result-hook').textContent = data.hook || 'N/A';
-                document.getElementById('result-framework').textContent = data.framework || 'N/A';
-                document.getElementById('result-engagement').textContent = data.engagement || 'N/A';
-                document.getElementById('result-variant-a').textContent = data.variantA || 'N/A';
-                document.getElementById('result-variant-b').textContent = data.variantB || 'N/A';
+                document.getElementById('result-hashtags').textContent = Array.isArray(data.hashtags) ? data.hashtags.join(' ') : (data.hashtags || 'N/A');
+                document.getElementById('result-hook').textContent = data.hook || data.emotionalTrigger || 'N/A';
+                document.getElementById('result-framework').textContent = data.persuasionFramework || data.framework || 'N/A';
+                document.getElementById('result-engagement').textContent = data.expectedEngagementRate || data.engagement || 'N/A';
+                const variants = data.variants || [];
+                document.getElementById('result-variant-a').textContent = variants[0] ? variants[0].headline + ' — ' + variants[0].body : (data.variantA || 'N/A');
+                document.getElementById('result-variant-b').textContent = variants[1] ? variants[1].headline + ' — ' + variants[1].body : (data.variantB || 'N/A');
 
                 resultsCard.style.display = 'block';
                 showToast('Content generated successfully!', 'success');
