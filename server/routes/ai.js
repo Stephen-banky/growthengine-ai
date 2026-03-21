@@ -17,10 +17,21 @@ function getBusinessInfo(userId) {
 // Generate content for any platform
 router.post('/generate-content', async (req, res) => {
   try {
-    const businessInfo = getBusinessInfo(req.user.id);
+    const dbInfo = getBusinessInfo(req.user.id);
+    // Map frontend fields to what AIService expects
+    const businessInfo = {
+      name: req.body.businessName || dbInfo.name,
+      industry: req.body.industry || dbInfo.industry,
+      website: dbInfo.website || ''
+    };
     const result = await AIService.generateContent({
-      ...req.body,
-      businessInfo
+      platform: req.body.platform,
+      businessInfo,
+      productInfo: req.body.topic || req.body.productInfo || 'General marketing',
+      targetAudience: req.body.targetAudience || 'Broad audience',
+      contentType: req.body.contentType || 'promotional',
+      tone: req.body.tone || 'professional',
+      language: req.body.language || 'English'
     });
     res.json(result);
   } catch (err) {
@@ -44,11 +55,19 @@ router.post('/email-sequence', async (req, res) => {
   }
 });
 
-// Generate targeting
+// Generate targeting / strategy
 router.post('/targeting', async (req, res) => {
   try {
-    const businessInfo = getBusinessInfo(req.user.id);
-    const result = await AIService.generateTargeting(businessInfo, req.body.productInfo);
+    const dbInfo = getBusinessInfo(req.user.id);
+    const businessInfo = {
+      name: req.body.businessName || dbInfo.name,
+      industry: req.body.industry || dbInfo.industry,
+      website: dbInfo.website || ''
+    };
+    const result = await AIService.generateTargeting(
+      businessInfo,
+      req.body.productInfo || req.body.goal || 'General marketing'
+    );
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
