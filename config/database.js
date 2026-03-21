@@ -246,7 +246,8 @@ try {
 } catch (e) {
   // Fallback: sql.js (pure JS SQLite - works in serverless/Netlify Functions)
   console.log('[DB] better-sqlite3 not available, using sql.js (in-memory)');
-  const initSqlJs = require('sql.js');
+  // Use the ASM.js build (no WASM file needed - works in serverless)
+  const initSqlJs = require('sql.js/dist/sql-asm.js');
 
   // Create a wrapper that matches better-sqlite3 API
   class SqlJsWrapper {
