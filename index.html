@@ -968,43 +968,43 @@
             </div>
 
             <div class="nav-section">
-                <div class="nav-item active" onclick="switchPage('dashboard')">
+                <div class="nav-item active" onclick="switchPage('dashboard', event)">
                     <div class="nav-icon">📊</div>
                     <div>Dashboard</div>
                 </div>
-                <div class="nav-item" onclick="switchPage('campaigns')">
+                <div class="nav-item" onclick="switchPage('campaigns', event)">
                     <div class="nav-icon">📢</div>
                     <div>Campaigns</div>
                 </div>
-                <div class="nav-item" onclick="switchPage('leads')">
+                <div class="nav-item" onclick="switchPage('leads', event)">
                     <div class="nav-icon">👥</div>
                     <div>Leads & CRM</div>
                 </div>
-                <div class="nav-item" onclick="switchPage('content')">
+                <div class="nav-item" onclick="switchPage('content', event)">
                     <div class="nav-icon">✍️</div>
                     <div>Content Studio</div>
                 </div>
-                <div class="nav-item" onclick="switchPage('ai')">
+                <div class="nav-item" onclick="switchPage('ai', event)">
                     <div class="nav-icon">🤖</div>
                     <div>AI Engine</div>
                 </div>
-                <div class="nav-item" onclick="switchPage('funnels')">
+                <div class="nav-item" onclick="switchPage('funnels', event)">
                     <div class="nav-icon">🔗</div>
                     <div>Funnels</div>
                 </div>
-                <div class="nav-item" onclick="switchPage('automations')">
+                <div class="nav-item" onclick="switchPage('automations', event)">
                     <div class="nav-icon">⚙️</div>
                     <div>Automations</div>
                 </div>
-                <div class="nav-item" onclick="switchPage('recruitment')">
+                <div class="nav-item" onclick="switchPage('recruitment', event)">
                     <div class="nav-icon">💼</div>
                     <div>Recruitment</div>
                 </div>
-                <div class="nav-item" onclick="switchPage('platforms')">
+                <div class="nav-item" onclick="switchPage('platforms', event)">
                     <div class="nav-icon">🔗</div>
                     <div>Platforms</div>
                 </div>
-                <div class="nav-item" onclick="switchPage('analytics')">
+                <div class="nav-item" onclick="switchPage('analytics', event)">
                     <div class="nav-icon">📈</div>
                     <div>Analytics</div>
                 </div>
@@ -1250,10 +1250,10 @@
                 <div class="page" id="campaigns">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
                         <div class="filter-group">
-                            <button class="filter-button active" onclick="filterCampaigns('all')">All 24</button>
-                            <button class="filter-button" onclick="filterCampaigns('active')">Active 18</button>
-                            <button class="filter-button" onclick="filterCampaigns('draft')">Draft 4</button>
-                            <button class="filter-button" onclick="filterCampaigns('paused')">Paused 2</button>
+                            <button class="filter-button active" onclick="filterCampaigns('all', event)">All 24</button>
+                            <button class="filter-button" onclick="filterCampaigns('active', event)">Active 18</button>
+                            <button class="filter-button" onclick="filterCampaigns('draft', event)">Draft 4</button>
+                            <button class="filter-button" onclick="filterCampaigns('paused', event)">Paused 2</button>
                         </div>
                         <button class="button button-primary">
                             <span>+</span>
@@ -2246,7 +2246,8 @@
     </div>
 
     <script>
-        function switchPage(pageName) {
+        function switchPage(pageName, evt) {
+            evt = evt || window.event;
             // Hide all pages
             const pages = document.querySelectorAll('.page');
             pages.forEach(page => page.classList.remove('active'));
@@ -2257,7 +2258,7 @@
             // Update nav items
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => item.classList.remove('active'));
-            event.target.closest('.nav-item').classList.add('active');
+            if (evt && evt.target) evt.target.closest('.nav-item').classList.add('active');
 
             // Update page title
             const pageTitles = {
@@ -2275,10 +2276,11 @@
             document.getElementById('page-title').textContent = pageTitles[pageName];
         }
 
-        function filterCampaigns(filter) {
+        function filterCampaigns(filter, evt) {
+            evt = evt || window.event;
             const buttons = document.querySelectorAll('.filter-button');
             buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if (evt && evt.target) evt.target.classList.add('active');
         }
     </script>
 </body>
