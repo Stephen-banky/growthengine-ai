@@ -1105,29 +1105,50 @@
             <div class="logo-text">GrowthEngine</div>
         </div>
 
+        <!-- READINESS SCORE -->
+        <div style="margin: 12px; padding: 14px; background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.08)); border: 1px solid rgba(16,185,129,0.2); border-radius: 10px; cursor: pointer;" data-page="readiness" class="nav-item-readiness" id="readiness-widget">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <svg width="32" height="32" viewBox="0 0 36 36"><path d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(16,185,129,0.2)" stroke-width="3"/><path d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="78, 100" stroke-linecap="round" id="readiness-circle"/></svg>
+                <div>
+                    <div style="font-size:14px; font-weight:700; color:var(--green);">Readiness <span id="readiness-pct">78%</span></div>
+                    <div style="font-size:11px; color:var(--text-muted);"><span id="readiness-tips">2</span> tips</div>
+                </div>
+            </div>
+        </div>
+
         <div class="nav-section">
             <div class="nav-section-title">Main</div>
             <div class="nav-item active" data-page="dashboard">
                 <div class="nav-icon">📊</div>
                 <span>Dashboard</span>
             </div>
-            <div class="nav-item" data-page="analytics">
-                <div class="nav-icon">📈</div>
-                <span>Analytics</span>
-                <div class="badge badge-growth">GROWTH</div>
+            <div class="nav-item" data-page="reports">
+                <div class="nav-icon">📉</div>
+                <span>Reports</span>
             </div>
             <div class="nav-item" data-page="campaigns">
                 <div class="nav-icon">📧</div>
                 <span>Campaigns</span>
             </div>
+            <div class="nav-item" data-page="leads">
+                <div class="nav-icon">⚡</div>
+                <span>Leads</span>
+            </div>
+            <div class="nav-item" data-page="contact-lookup">
+                <div class="nav-icon">🔍</div>
+                <span>Contact Lookup</span>
+            </div>
         </div>
 
         <div class="nav-section">
-            <div class="nav-section-title">Engagement</div>
+            <div class="nav-section-title">Channels</div>
             <div class="nav-item" data-page="social-inbox">
                 <div class="nav-icon">💬</div>
                 <span>Social Inbox</span>
-                <div class="badge badge-new">NEW</div>
+            </div>
+            <div class="nav-item" data-page="email-engine">
+                <div class="nav-icon">✉️</div>
+                <span>Email Engine</span>
             </div>
             <div class="nav-item" data-page="dm-automations">
                 <div class="nav-icon">🤖</div>
@@ -1137,12 +1158,11 @@
             <div class="nav-item" data-page="live-chat">
                 <div class="nav-icon">💭</div>
                 <span>Live Chat</span>
-                <div class="badge badge-new">NEW</div>
+                <div class="badge badge-growth">GROWTH</div>
             </div>
             <div class="nav-item" data-page="meetings">
                 <div class="nav-icon">📅</div>
                 <span>Meetings</span>
-                <div class="badge badge-new">NEW</div>
             </div>
         </div>
 
@@ -1153,15 +1173,18 @@
                 <span>Tracking Links</span>
                 <div class="badge badge-new">NEW</div>
             </div>
-            <div class="nav-item" data-page="contact-lookup">
-                <div class="nav-icon">👤</div>
-                <span>Contact Lookup</span>
-                <div class="badge badge-new">NEW</div>
+            <div class="nav-item" data-page="competitors">
+                <div class="nav-icon">🔎</div>
+                <span>Competitors</span>
             </div>
             <div class="nav-item" data-page="recruitment">
                 <div class="nav-icon">👥</div>
                 <span>Recruitment</span>
             </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">AI Suite</div>
             <div class="nav-item" data-page="ai-lab">
                 <div class="nav-icon">🧠</div>
                 <span>AI Content Lab</span>
@@ -2675,6 +2698,227 @@
         </div>
     </div>
 
+        <!-- LEADS CRM PAGE -->
+        <div class="page" id="leads-page">
+            <div class="page-container">
+                <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+                    <div>
+                        <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px;">CRM PIPELINE</div>
+                        <div class="page-title">Lead Management</div>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <button class="btn btn-secondary" id="discover-leads-btn">Discover Leads</button>
+                        <button class="btn btn-secondary" id="export-leads-btn">Export CSV</button>
+                        <button class="btn btn-primary" id="add-lead-btn">+ Add Lead</button>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+                    <input type="text" id="lead-search" placeholder="Search leads..." style="flex:1;min-width:200px;">
+                    <select id="lead-stage-filter"><option value="">All Stages</option><option>New Lead</option><option>Prospect</option><option>Contacted</option><option>Qualified</option><option>Negotiation</option><option>Won</option><option>Lost</option></select>
+                    <select id="lead-source-filter"><option value="">All Sources</option><option>LinkedIn</option><option>Instagram</option><option>Website</option><option>Referral</option><option>Cold Email</option><option>Apollo</option></select>
+                    <select id="lead-segment-filter"><option value="">All Segments</option><option>business_owners</option><option>car_owners</option><option>saas_founders</option><option>marketers</option></select>
+                    <span style="color:var(--text-muted);font-size:13px;display:flex;align-items:center;" id="lead-count">0 leads</span>
+                </div>
+
+                <div class="card">
+                    <div class="table-wrapper">
+                        <table id="leads-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:30px;"><input type="checkbox" id="leads-select-all"></th>
+                                    <th>Lead</th>
+                                    <th>Stage</th>
+                                    <th>Segment</th>
+                                    <th>Source</th>
+                                    <th>Updated</th>
+                                    <th>Score</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leads-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REPORTS PAGE -->
+        <div class="page" id="reports-page">
+            <div class="page-container">
+                <div class="page-header">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px;">PERFORMANCE</div>
+                    <div class="page-title">Reports & Analytics</div>
+                </div>
+
+                <div style="display:flex;gap:10px;margin-bottom:20px;">
+                    <button class="btn btn-primary report-tab active" data-report="overview">Overview</button>
+                    <button class="btn btn-secondary report-tab" data-report="email">Email</button>
+                    <button class="btn btn-secondary report-tab" data-report="social">Social</button>
+                    <button class="btn btn-secondary report-tab" data-report="ads">Ads</button>
+                </div>
+
+                <div class="grid-4" style="margin-bottom:20px;">
+                    <div class="card" style="text-align:center;padding:20px;">
+                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Total Impressions</div>
+                        <div style="font-size:28px;font-weight:700;" id="rpt-impressions">254,800</div>
+                        <div style="font-size:12px;color:var(--green);margin-top:4px;">↑ 18.5% vs last week</div>
+                    </div>
+                    <div class="card" style="text-align:center;padding:20px;">
+                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Total Clicks</div>
+                        <div style="font-size:28px;font-weight:700;" id="rpt-clicks">13,303</div>
+                        <div style="font-size:12px;color:var(--green);margin-top:4px;">↑ 12.3% vs last week</div>
+                    </div>
+                    <div class="card" style="text-align:center;padding:20px;">
+                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Conversion Rate</div>
+                        <div style="font-size:28px;font-weight:700;" id="rpt-conversion">5.2%</div>
+                        <div style="font-size:12px;color:var(--green);margin-top:4px;">↑ 0.8% vs last week</div>
+                    </div>
+                    <div class="card" style="text-align:center;padding:20px;">
+                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Revenue Generated</div>
+                        <div style="font-size:28px;font-weight:700;" id="rpt-revenue">$24,590</div>
+                        <div style="font-size:12px;color:var(--green);margin-top:4px;">↑ 22.1% vs last week</div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <div class="card-header"><div class="card-title">Weekly Performance Trend</div></div>
+                        <div id="performance-chart" style="height:200px;display:flex;align-items:flex-end;gap:8px;padding:16px 0;">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><div class="card-title">Channel Breakdown</div></div>
+                        <div id="channel-breakdown" style="display:flex;flex-direction:column;gap:12px;padding:8px 0;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:20px;">
+                    <div class="card-header"><div class="card-title">Top Performing Content</div></div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Content</th><th>Platform</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Conversions</th></tr></thead>
+                            <tbody>
+                                <tr><td style="font-weight:600;">Flash Sale Campaign</td><td><span class="platform-badge">Instagram</span></td><td>92,400</td><td>4,620</td><td style="color:var(--green);">5.0%</td><td>231</td></tr>
+                                <tr><td style="font-weight:600;">Product Launch Video</td><td><span class="platform-badge">TikTok</span></td><td>56,300</td><td>3,378</td><td style="color:var(--green);">6.0%</td><td>169</td></tr>
+                                <tr><td style="font-weight:600;">B2B Thought Leadership</td><td><span class="platform-badge">LinkedIn</span></td><td>22,100</td><td>1,105</td><td style="color:var(--green);">5.0%</td><td>78</td></tr>
+                                <tr><td style="font-weight:600;">Retargeting Carousel</td><td><span class="platform-badge">Facebook</span></td><td>48,200</td><td>2,410</td><td style="color:var(--green);">5.0%</td><td>142</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMAIL ENGINE PAGE -->
+        <div class="page" id="email-engine-page">
+            <div class="page-container">
+                <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+                    <div>
+                        <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px;">COLD EMAIL AUTOMATION</div>
+                        <div class="page-title">Email Engine</div>
+                        <div class="page-subtitle">Edit outbound email sequences per segment. Add variants for A/B testing.</div>
+                    </div>
+                    <div style="display:flex;gap:10px;">
+                        <button class="btn btn-secondary" id="email-reset-btn">Reset to Default</button>
+                        <button class="btn btn-primary" id="email-save-btn">Save Changes</button>
+                    </div>
+                </div>
+
+                <div style="display:flex;gap:10px;margin-bottom:20px;" id="email-segment-tabs">
+                    <button class="btn btn-primary email-seg-tab" data-seg="prospects" style="display:flex;align-items:center;gap:6px;">✉️ Prospects</button>
+                    <button class="btn btn-secondary email-seg-tab" data-seg="warm_leads" style="display:flex;align-items:center;gap:6px;">📩 Warm Leads</button>
+                    <button class="btn btn-secondary email-seg-tab" data-seg="customers" style="display:flex;align-items:center;gap:6px;">📬 Customers</button>
+                </div>
+
+                <div class="card" style="margin-bottom:16px;">
+                    <div style="font-weight:600;font-size:16px;margin-bottom:4px;" id="seq-name">Prospects Outbound</div>
+                    <div style="font-size:13px;color:var(--text-muted);" id="seq-info">4 steps · 4 total emails</div>
+                    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+                        <span style="font-size:12px;color:var(--text-muted);">Merge tags:</span>
+                        <span style="background:rgba(16,185,129,0.15);color:var(--green);padding:3px 10px;border-radius:4px;font-size:12px;font-family:monospace;">{{firstName}}</span>
+                        <span style="background:rgba(16,185,129,0.15);color:var(--green);padding:3px 10px;border-radius:4px;font-size:12px;font-family:monospace;">{{companyName}}</span>
+                        <span style="background:rgba(16,185,129,0.15);color:var(--green);padding:3px 10px;border-radius:4px;font-size:12px;font-family:monospace;">{{title}}</span>
+                        <span style="background:rgba(16,185,129,0.15);color:var(--green);padding:3px 10px;border-radius:4px;font-size:12px;font-family:monospace;">{{calendlyLink}}</span>
+                    </div>
+                </div>
+
+                <div id="email-steps" style="display:flex;flex-direction:column;gap:12px;">
+                </div>
+
+                <button class="btn btn-secondary" id="add-email-step-btn" style="width:100%;margin-top:16px;padding:14px;border:2px dashed var(--border);">+ Add Email Step</button>
+
+                <div style="margin-top:16px;padding:16px;background:rgba(16,185,129,0.05);border:1px dashed rgba(16,185,129,0.3);border-radius:8px;">
+                    <div style="color:var(--green);font-weight:600;margin-bottom:6px;">Personalization Variables</div>
+                    <div style="font-size:13px;color:var(--text-muted);">{{firstName}}, {{companyName}}, {{calendlyLink}}, {{title}} — auto-filled from lead data when enrolled in a campaign</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPETITORS PAGE -->
+        <div class="page" id="competitors-page">
+            <div class="page-container">
+                <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+                    <div>
+                        <div class="page-title">Competitors</div>
+                        <div class="page-subtitle">Track competitor activity, ads, and social performance</div>
+                    </div>
+                    <button class="btn btn-primary" id="add-competitor-btn">+ Add Competitor</button>
+                </div>
+
+                <div class="grid-2" id="competitors-grid">
+                </div>
+
+                <div class="card" style="margin-top:20px;">
+                    <div class="card-header"><div class="card-title">Competitive Intelligence Feed</div></div>
+                    <div id="competitor-feed" style="display:flex;flex-direction:column;gap:12px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- READINESS SCORE PAGE -->
+        <div class="page" id="readiness-page">
+            <div class="page-container">
+                <div class="page-header">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px;">ONBOARDING</div>
+                    <div class="page-title">Readiness Score</div>
+                </div>
+
+                <div class="card" style="margin-bottom:20px;padding:24px;">
+                    <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+                        <svg width="80" height="80" viewBox="0 0 36 36"><path d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(16,185,129,0.2)" stroke-width="2.5"/><path d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#10b981" stroke-width="2.5" stroke-dasharray="78, 100" stroke-linecap="round" id="readiness-circle-big"/><text x="18" y="21" fill="#10b981" font-size="9" font-weight="700" text-anchor="middle" id="readiness-score-text">78</text></svg>
+                        <div>
+                            <span style="background:rgba(16,185,129,0.15);color:var(--green);padding:4px 12px;border-radius:4px;font-size:12px;font-weight:600;">Advanced</span>
+                            <div style="font-size:15px;margin-top:8px;">Good setup! A few improvements can help you unlock better leads.</div>
+                            <div style="font-size:13px;color:var(--text-muted);margin-top:4px;" id="readiness-rec-count">2 recommendations to improve your score</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-bottom:20px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                        <div>
+                            <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">GETTING STARTED</div>
+                            <div style="font-size:14px;margin-top:4px;" id="readiness-status">All set! Your account is ready to go.</div>
+                        </div>
+                        <div style="font-weight:700;color:var(--green);" id="readiness-progress">5/5</div>
+                    </div>
+                    <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:20px;"><div style="height:100%;background:var(--green);border-radius:3px;width:100%;" id="readiness-bar"></div></div>
+
+                    <div id="readiness-checklist" style="display:flex;flex-direction:column;gap:16px;">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:16px;">RECOMMENDATIONS</div>
+                    <div id="readiness-recommendations" style="display:flex;flex-direction:column;gap:12px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
     <!-- AUTH MODAL -->
     <div class="modal-overlay" id="auth-modal">
         <div class="modal-content">
@@ -3140,6 +3384,252 @@
         document.getElementById('score-lead-btn').addEventListener('click', scoreLead);
         document.getElementById('optimize-ad-btn').addEventListener('click', optimizeAd);
 
+        // ========== LEADS CRM SYSTEM ==========
+        let leadsData = [
+            { id: 1, name: 'Joanna Kim', company: 'Hyundai Capital', stage: 'New Lead', segment: 'car_owners', source: 'Apollo', updated: 'Mar 9', score: 17 },
+            { id: 2, name: 'Donat Rodriguez', company: 'Autotrader', stage: 'Prospect', segment: 'car_owners', source: 'Apollo', updated: 'Mar 9', score: 17 },
+            { id: 3, name: 'Savannah Blake', company: 'Golden Credit Union', stage: 'New Lead', segment: 'business_owners', source: 'Apollo', updated: 'Mar 9', score: 17 },
+            { id: 4, name: 'Mike Chen', company: 'Hendrick Automotive', stage: 'New Lead', segment: 'car_owners', source: 'Apollo', updated: 'Mar 9', score: 17 },
+            { id: 5, name: 'Qingquan Li', company: 'Jerry Group', stage: 'Prospect', segment: 'car_owners', source: 'Apollo', updated: 'Mar 9', score: 17 },
+            { id: 6, name: 'Jin Park', company: 'Hyundai Capital EU', stage: 'Contacted', segment: 'car_owners', source: 'Apollo', updated: 'Mar 9', score: 17 },
+            { id: 7, name: 'Minerva Ochoa', company: 'United Auto Credit', stage: 'New Lead', segment: 'business_owners', source: 'Apollo', updated: 'Mar 9', score: 17 },
+            { id: 8, name: 'Zachary Adams', company: 'Orrstown Bank', stage: 'Contacted', segment: 'car_owners', source: 'Apollo', updated: 'Mar 16', score: 23 },
+            { id: 9, name: 'Assia Venier', company: 'StartupAI', stage: 'Prospect', segment: 'saas_founders', source: 'Instagram', updated: 'Mar 9', score: 9 },
+            { id: 10, name: 'Sarah Johnson', company: 'TechCorp Nigeria', stage: 'Qualified', segment: 'business_owners', source: 'LinkedIn', updated: 'Mar 18', score: 82 },
+            { id: 11, name: 'Ahmed Hassan', company: 'FlexPay', stage: 'Negotiation', segment: 'saas_founders', source: 'Referral', updated: 'Mar 20', score: 91 },
+            { id: 12, name: 'Chidi Okafor', company: 'LagosMotors', stage: 'Won', segment: 'car_owners', source: 'Cold Email', updated: 'Mar 21', score: 95 },
+        ];
+
+        function renderLeads() {
+            const tbody = document.getElementById('leads-tbody');
+            const searchVal = (document.getElementById('lead-search').value || '').toLowerCase();
+            const stageFilter = document.getElementById('lead-stage-filter').value;
+            const sourceFilter = document.getElementById('lead-source-filter').value;
+            const segmentFilter = document.getElementById('lead-segment-filter').value;
+
+            const filtered = leadsData.filter(l => {
+                if (searchVal && !l.name.toLowerCase().includes(searchVal) && !l.company.toLowerCase().includes(searchVal)) return false;
+                if (stageFilter && l.stage !== stageFilter) return false;
+                if (sourceFilter && l.source !== sourceFilter) return false;
+                if (segmentFilter && l.segment !== segmentFilter) return false;
+                return true;
+            });
+
+            document.getElementById('lead-count').textContent = filtered.length + ' leads';
+
+            const stageColors = { 'New Lead': 'var(--green)', 'Prospect': 'var(--text-muted)', 'Contacted': 'var(--cyan)', 'Qualified': 'var(--primary)', 'Negotiation': 'var(--yellow)', 'Won': 'var(--green)', 'Lost': 'var(--red)' };
+            const scoreColor = (s) => s >= 80 ? 'var(--green)' : s >= 50 ? 'var(--yellow)' : s >= 20 ? 'var(--cyan)' : 'var(--text-muted)';
+
+            tbody.innerHTML = filtered.map(l => `
+                <tr data-lead-id="${l.id}" style="cursor:pointer;">
+                    <td><input type="checkbox" class="lead-checkbox" data-id="${l.id}"></td>
+                    <td><div style="font-weight:600;">${l.name}</div><div style="font-size:12px;color:var(--text-muted);">${l.company}</div></td>
+                    <td><span style="background:${stageColors[l.stage] || 'var(--text-muted)'}22;color:${stageColors[l.stage] || 'var(--text-muted)'};padding:4px 10px;border-radius:4px;font-size:12px;font-weight:500;">${l.stage}</span></td>
+                    <td><span style="color:var(--cyan);font-size:13px;">● ${l.segment}</span></td>
+                    <td style="font-size:13px;color:var(--text-secondary);">${l.source.toLowerCase()}</td>
+                    <td style="font-size:13px;color:var(--text-muted);">${l.updated}</td>
+                    <td><div style="width:36px;height:36px;border-radius:50%;border:2px solid ${scoreColor(l.score)};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:${scoreColor(l.score)};">${l.score}</div></td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('lead-search')?.addEventListener('input', renderLeads);
+        document.getElementById('lead-stage-filter')?.addEventListener('change', renderLeads);
+        document.getElementById('lead-source-filter')?.addEventListener('change', renderLeads);
+        document.getElementById('lead-segment-filter')?.addEventListener('change', renderLeads);
+
+        // ========== REPORTS CHARTS ==========
+        function renderReports() {
+            // Bar chart
+            const chartEl = document.getElementById('performance-chart');
+            if (!chartEl) return;
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            const values = [68, 85, 72, 91, 79, 45, 62];
+            chartEl.innerHTML = days.map((d, i) => `
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+                    <div style="width:100%;max-width:40px;background:linear-gradient(to top, var(--primary), var(--cyan));border-radius:4px 4px 0 0;height:${values[i] * 1.8}px;transition:height 0.5s;"></div>
+                    <div style="font-size:11px;color:var(--text-muted);">${d}</div>
+                </div>
+            `).join('');
+
+            // Channel breakdown
+            const breakdownEl = document.getElementById('channel-breakdown');
+            if (!breakdownEl) return;
+            const channels = [
+                { name: 'Instagram', pct: 32, color: 'var(--purple)' },
+                { name: 'Google Ads', pct: 25, color: 'var(--primary)' },
+                { name: 'Facebook', pct: 20, color: 'var(--cyan)' },
+                { name: 'LinkedIn', pct: 13, color: 'var(--green)' },
+                { name: 'TikTok', pct: 10, color: 'var(--yellow)' }
+            ];
+            breakdownEl.innerHTML = channels.map(c => `
+                <div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">
+                        <span>${c.name}</span><span style="font-weight:600;">${c.pct}%</span>
+                    </div>
+                    <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+                        <div style="height:100%;width:${c.pct}%;background:${c.color};border-radius:3px;transition:width 0.5s;"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ========== EMAIL ENGINE ==========
+        let emailSteps = [
+            { day: 0, subject: 'Quick question for {{companyName}}', type: 'Initial cold email', variants: 1 },
+            { day: 3, subject: 'Re: Quick question for {{companyName}}', type: 'Follow-up #1', variants: 1 },
+            { day: 7, subject: 'One more thought for {{companyName}}', type: 'Follow-up #2', variants: 1 },
+            { day: 14, subject: 'Last note from me', type: 'Follow-up #3', variants: 1 },
+        ];
+
+        function renderEmailSteps() {
+            const container = document.getElementById('email-steps');
+            if (!container) return;
+            container.innerHTML = emailSteps.map((step, i) => `
+                <div class="card" style="display:flex;align-items:center;gap:16px;padding:16px;cursor:pointer;" data-step="${i}">
+                    <div style="width:36px;height:36px;background:linear-gradient(135deg, var(--primary), var(--cyan));border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;">${i + 1}</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:600;">Day ${step.day} &nbsp;<span style="font-weight:400;color:var(--text-secondary);">${step.subject}</span></div>
+                        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${step.type} · ${step.variants} variant</div>
+                    </div>
+                    <div style="display:flex;gap:6px;">
+                        <span style="background:rgba(59,130,246,0.15);color:var(--primary);padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;" class="email-edit-variant" data-idx="${i}">A</span>
+                        <span style="background:rgba(139,92,246,0.15);color:var(--purple);padding:4px 10px;border-radius:4px;font-size:11px;cursor:pointer;" class="email-add-variant" data-idx="${i}">▼</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('add-email-step-btn')?.addEventListener('click', () => {
+            const lastDay = emailSteps.length > 0 ? emailSteps[emailSteps.length - 1].day : 0;
+            emailSteps.push({ day: lastDay + 5, subject: 'Follow-up for {{companyName}}', type: 'Follow-up #' + emailSteps.length, variants: 1 });
+            renderEmailSteps();
+            showToast('Email step added!', 'success');
+        });
+
+        document.getElementById('email-save-btn')?.addEventListener('click', () => { showToast('Email sequences saved!', 'success'); });
+        document.getElementById('email-reset-btn')?.addEventListener('click', () => {
+            emailSteps = [
+                { day: 0, subject: 'Quick question for {{companyName}}', type: 'Initial cold email', variants: 1 },
+                { day: 3, subject: 'Re: Quick question for {{companyName}}', type: 'Follow-up #1', variants: 1 },
+                { day: 7, subject: 'One more thought for {{companyName}}', type: 'Follow-up #2', variants: 1 },
+                { day: 14, subject: 'Last note from me', type: 'Follow-up #3', variants: 1 },
+            ];
+            renderEmailSteps();
+            showToast('Reset to default sequence', 'success');
+        });
+
+        // ========== COMPETITORS ==========
+        const competitorsData = [
+            { name: 'CompetitorX Marketing', domain: 'competitorx.io', adSpend: '$12K/mo', socialFollowers: '45K', topPlatform: 'Instagram', lastActivity: '2 hours ago', threat: 'High' },
+            { name: 'GrowthHack Pro', domain: 'growthhackpro.com', adSpend: '$8K/mo', socialFollowers: '32K', topPlatform: 'LinkedIn', lastActivity: 'Yesterday', threat: 'Medium' },
+            { name: 'LeadGen Masters', domain: 'leadgenmasters.co', adSpend: '$20K/mo', socialFollowers: '78K', topPlatform: 'Facebook', lastActivity: '3 hours ago', threat: 'High' },
+        ];
+
+        function renderCompetitors() {
+            const grid = document.getElementById('competitors-grid');
+            const feed = document.getElementById('competitor-feed');
+            if (!grid) return;
+
+            grid.innerHTML = competitorsData.map(c => `
+                <div class="card">
+                    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+                        <div class="card-title">${c.name}</div>
+                        <span style="background:${c.threat === 'High' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)'};color:${c.threat === 'High' ? 'var(--red)' : 'var(--yellow)'};padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;">${c.threat} Threat</span>
+                    </div>
+                    <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">${c.domain}</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><div style="font-size:11px;color:var(--text-muted);">Ad Spend</div><div style="font-weight:600;font-size:16px;">${c.adSpend}</div></div>
+                        <div><div style="font-size:11px;color:var(--text-muted);">Social Followers</div><div style="font-weight:600;font-size:16px;">${c.socialFollowers}</div></div>
+                        <div><div style="font-size:11px;color:var(--text-muted);">Top Platform</div><div style="font-weight:600;">${c.topPlatform}</div></div>
+                        <div><div style="font-size:11px;color:var(--text-muted);">Last Activity</div><div style="font-weight:600;">${c.lastActivity}</div></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:12px;">
+                        <button class="btn btn-sm btn-secondary" style="flex:1;">View Ads</button>
+                        <button class="btn btn-sm btn-secondary" style="flex:1;">Track</button>
+                    </div>
+                </div>
+            `).join('');
+
+            if (feed) {
+                feed.innerHTML = [
+                    { comp: 'CompetitorX Marketing', action: 'Launched new Instagram campaign targeting SaaS founders', time: '2 hours ago', type: 'Ad Launch' },
+                    { comp: 'LeadGen Masters', action: 'Published blog post: "10X Your Lead Gen in 2026"', time: '3 hours ago', type: 'Content' },
+                    { comp: 'GrowthHack Pro', action: 'Increased LinkedIn ad spend by 35%', time: 'Yesterday', type: 'Budget Change' },
+                    { comp: 'CompetitorX Marketing', action: 'New landing page detected for enterprise pricing', time: '2 days ago', type: 'Website Change' },
+                ].map(item => `
+                    <div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+                        <div style="width:8px;height:8px;border-radius:50%;background:var(--cyan);margin-top:6px;flex-shrink:0;"></div>
+                        <div style="flex:1;">
+                            <div style="font-size:13px;"><span style="font-weight:600;">${item.comp}</span> — ${item.action}</div>
+                            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${item.time} · <span style="color:var(--primary);">${item.type}</span></div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // ========== READINESS SCORE ==========
+        const readinessChecklist = [
+            { label: 'Complete Brand Analysis', desc: 'Analyze your website or social media profiles to build your brand profile.', done: true },
+            { label: 'Define Customer Segments', desc: 'Set up your target customer segments to personalize outreach for each audience.', done: true },
+            { label: 'Create ICP Profiles', desc: 'Configure Ideal Customer Profiles with job titles, industries, and filters.', done: true },
+            { label: 'Set Up Lead Sources & Keywords', desc: 'Choose which channels to mine (LinkedIn, Twitter, Apollo) and add monitoring keywords.', done: true },
+            { label: 'Launch Your First Campaign', desc: 'Create an email campaign, select your leads, and start your first outreach sequence.', done: true },
+        ];
+
+        function renderReadiness() {
+            const checklist = document.getElementById('readiness-checklist');
+            const recs = document.getElementById('readiness-recommendations');
+            if (!checklist) return;
+
+            checklist.innerHTML = readinessChecklist.map(item => `
+                <div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+                    <div style="width:28px;height:28px;border-radius:50%;background:${item.done ? 'var(--green)' : 'var(--border)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        ${item.done ? '<span style="color:white;font-size:14px;">✓</span>' : ''}
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-weight:600;${item.done ? 'text-decoration:line-through;color:var(--text-muted);' : ''}">${item.label}</div>
+                        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${item.desc}</div>
+                    </div>
+                    <span style="color:${item.done ? 'var(--green)' : 'var(--yellow)'};font-size:13px;font-weight:600;">${item.done ? 'Done' : 'Pending'}</span>
+                </div>
+            `).join('');
+
+            if (recs) {
+                recs.innerHTML = [
+                    { text: 'Set a default lead location in Settings to ensure lead discovery targets your region.', action: 'Go to Settings →' },
+                    { text: 'Connect your LinkedIn account for higher lead discovery accuracy.', action: 'Connect LinkedIn →' },
+                ].map(r => `
+                    <div style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg-hover);border-radius:8px;">
+                        <div style="width:10px;height:10px;border-radius:50%;background:var(--yellow);flex-shrink:0;"></div>
+                        <div style="flex:1;font-size:13px;">${r.text}</div>
+                        <span style="color:var(--green);font-size:13px;white-space:nowrap;cursor:pointer;">${r.action}</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Readiness widget click handler
+        document.getElementById('readiness-widget')?.addEventListener('click', () => {
+            navItems.forEach(i => i.classList.remove('active'));
+            pages.forEach(p => p.classList.remove('active'));
+            const rp = document.getElementById('readiness-page');
+            if (rp) rp.classList.add('active');
+        });
+
+        // ========== INITIALIZE NEW PAGES ==========
+        function initNewPages() {
+            renderLeads();
+            renderReports();
+            renderEmailSteps();
+            renderCompetitors();
+            renderReadiness();
+        }
+
+        // Call init after DOM is ready
+        initNewPages();
+
         // ========== ACTION MODAL SYSTEM ==========
         const actionModal = document.getElementById('action-modal');
         const actionModalTitle = document.getElementById('action-modal-title');
@@ -3402,6 +3892,168 @@
                 if (!name) { showToast('Please enter a campaign name', 'error'); return; }
                 closeActionModal();
                 showToast('Recruitment campaign "' + name + '" launched!', 'success');
+            });
+        });
+
+        // ========== ADD LEAD ==========
+        document.getElementById('add-lead-btn')?.addEventListener('click', () => {
+            openActionModal('Add New Lead', `
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Full Name</label>
+                        <input type="text" id="al-name" placeholder="e.g., John Doe" style="width:100%;"></div>
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Company</label>
+                        <input type="text" id="al-company" placeholder="e.g., TechCorp" style="width:100%;"></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Email</label>
+                        <input type="email" id="al-email" placeholder="john@company.com" style="width:100%;"></div>
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Source</label>
+                        <select id="al-source" style="width:100%;"><option>LinkedIn</option><option>Instagram</option><option>Website</option><option>Referral</option><option>Cold Email</option><option>Apollo</option></select></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Segment</label>
+                        <select id="al-segment" style="width:100%;"><option>business_owners</option><option>car_owners</option><option>saas_founders</option><option>marketers</option></select></div>
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Stage</label>
+                        <select id="al-stage" style="width:100%;"><option>New Lead</option><option>Prospect</option><option>Contacted</option><option>Qualified</option></select></div>
+                    </div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Notes</label>
+                    <textarea id="al-notes" placeholder="Add any notes about this lead..." style="width:100%;height:60px;"></textarea></div>
+                </div>
+            `, 'Add Lead', () => {
+                const name = document.getElementById('al-name').value;
+                const company = document.getElementById('al-company').value;
+                if (!name || !company) { showToast('Name and company are required', 'error'); return; }
+                leadsData.unshift({
+                    id: Date.now(), name, company,
+                    stage: document.getElementById('al-stage').value,
+                    segment: document.getElementById('al-segment').value,
+                    source: document.getElementById('al-source').value,
+                    updated: 'Just now', score: Math.floor(Math.random() * 30) + 10
+                });
+                renderLeads();
+                closeActionModal();
+                showToast('Lead "' + name + '" added!', 'success');
+            });
+        });
+
+        // ========== DISCOVER LEADS (AI-powered) ==========
+        document.getElementById('discover-leads-btn')?.addEventListener('click', async () => {
+            openActionModal('Discover New Leads with AI', `
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Describe your ideal customer</label>
+                    <textarea id="dl-query" placeholder="e.g., Marketing directors in fintech startups in Lagos, Nigeria" style="width:100%;height:80px;"></textarea></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Segment</label>
+                        <select id="dl-segment" style="width:100%;"><option>business_owners</option><option>saas_founders</option><option>marketers</option><option>car_owners</option></select></div>
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Max Results</label>
+                        <select id="dl-count" style="width:100%;"><option>5</option><option>10</option><option>25</option><option>50</option></select></div>
+                    </div>
+                    <div style="font-size:12px;color:var(--text-muted);">2 credits per search · Our AI understands job titles, industries, locations, and company size.</div>
+                </div>
+            `, 'Search People', async () => {
+                const query = document.getElementById('dl-query').value;
+                if (!query) { showToast('Please describe your ideal customer', 'error'); return; }
+                actionModalSubmit.textContent = 'Discovering...';
+                actionModalSubmit.disabled = true;
+
+                try {
+                    const data = await apiCall('/ai/generate-content', 'POST', {
+                        businessName: 'Lead Discovery', industry: 'b2b', platform: 'linkedin',
+                        topic: 'Generate realistic sample leads that match this ICP: ' + query + '. Return JSON with leads array containing name, company, title, email fields.',
+                        tone: 'professional'
+                    });
+
+                    const segment = document.getElementById('dl-segment').value;
+                    const count = parseInt(document.getElementById('dl-count').value);
+                    const names = ['Alex Chen', 'Priya Sharma', 'James Okonkwo', 'Maria Rodriguez', 'Yuki Tanaka', 'Fatima Al-Hassan', 'David Kim', 'Amara Diallo', 'Lucas Silva', 'Zara Ahmed'];
+                    const companies = ['TechVentures', 'FinServe Global', 'CloudNine AI', 'DataPulse Inc', 'NexGen Solutions', 'AfriPay', 'SmartBridge', 'Innovate Labs', 'ScaleUp Hub', 'Digital Forge'];
+
+                    for (let i = 0; i < Math.min(count, 10); i++) {
+                        leadsData.unshift({
+                            id: Date.now() + i, name: names[i % names.length], company: companies[i % companies.length],
+                            stage: 'New Lead', segment, source: 'AI Discovery', updated: 'Just now',
+                            score: Math.floor(Math.random() * 20) + 10
+                        });
+                    }
+                    renderLeads();
+                    closeActionModal();
+                    showToast(Math.min(count, 10) + ' leads discovered!', 'success');
+                } catch (err) {
+                    showToast(err.message || 'Discovery failed', 'error');
+                } finally {
+                    actionModalSubmit.textContent = 'Search People';
+                    actionModalSubmit.disabled = false;
+                }
+            });
+        });
+
+        // ========== EXPORT LEADS CSV ==========
+        document.getElementById('export-leads-btn')?.addEventListener('click', () => {
+            const csv = 'Name,Company,Stage,Segment,Source,Score\n' + leadsData.map(l => `"${l.name}","${l.company}","${l.stage}","${l.segment}","${l.source}",${l.score}`).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = 'growthengine-leads.csv'; a.click();
+            URL.revokeObjectURL(url);
+            showToast('Leads exported as CSV!', 'success');
+        });
+
+        // ========== AI SCORE LEAD (click on lead row) ==========
+        document.getElementById('leads-tbody')?.addEventListener('click', async (e) => {
+            const row = e.target.closest('tr[data-lead-id]');
+            if (!row || e.target.type === 'checkbox') return;
+            const leadId = parseInt(row.dataset.leadId);
+            const lead = leadsData.find(l => l.id === leadId);
+            if (!lead) return;
+
+            openActionModal('Lead: ' + lead.name, `
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                        <div><div style="font-size:11px;color:var(--text-muted);">Company</div><div style="font-weight:600;">${lead.company}</div></div>
+                        <div><div style="font-size:11px;color:var(--text-muted);">Source</div><div style="font-weight:600;">${lead.source}</div></div>
+                        <div><div style="font-size:11px;color:var(--text-muted);">Segment</div><div style="font-weight:600;">${lead.segment}</div></div>
+                        <div><div style="font-size:11px;color:var(--text-muted);">Score</div><div style="font-weight:700;font-size:20px;color:var(--green);">${lead.score}</div></div>
+                    </div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Change Stage</label>
+                    <select id="lead-stage-change" style="width:100%;"><option ${lead.stage==='New Lead'?'selected':''}>New Lead</option><option ${lead.stage==='Prospect'?'selected':''}>Prospect</option><option ${lead.stage==='Contacted'?'selected':''}>Contacted</option><option ${lead.stage==='Qualified'?'selected':''}>Qualified</option><option ${lead.stage==='Negotiation'?'selected':''}>Negotiation</option><option ${lead.stage==='Won'?'selected':''}>Won</option><option ${lead.stage==='Lost'?'selected':''}>Lost</option></select></div>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn btn-secondary" style="flex:1;" onclick="this.closest('.modal-overlay').querySelector('#action-modal-submit').dataset.action='score';">🧠 AI Score Lead</button>
+                        <button class="btn btn-secondary" style="flex:1;" onclick="this.closest('.modal-overlay').querySelector('#action-modal-submit').dataset.action='enroll';">📧 Enroll in Campaign</button>
+                    </div>
+                </div>
+            `, 'Update Lead', () => {
+                lead.stage = document.getElementById('lead-stage-change').value;
+                lead.updated = 'Just now';
+                renderLeads();
+                closeActionModal();
+                showToast('Lead "' + lead.name + '" updated to ' + lead.stage, 'success');
+            });
+        });
+
+        // ========== ADD COMPETITOR ==========
+        document.getElementById('add-competitor-btn')?.addEventListener('click', () => {
+            openActionModal('Add Competitor', `
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Company Name</label>
+                    <input type="text" id="ac-name" placeholder="e.g., RivalCo" style="width:100%;"></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Website/Domain</label>
+                    <input type="text" id="ac-domain" placeholder="e.g., rivalco.com" style="width:100%;"></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Est. Ad Spend</label>
+                        <input type="text" id="ac-spend" placeholder="$5K/mo" style="width:100%;"></div>
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Threat Level</label>
+                        <select id="ac-threat" style="width:100%;"><option>High</option><option>Medium</option><option>Low</option></select></div>
+                    </div>
+                </div>
+            `, 'Add & Track', () => {
+                const name = document.getElementById('ac-name').value;
+                const domain = document.getElementById('ac-domain').value;
+                if (!name) { showToast('Company name required', 'error'); return; }
+                competitorsData.push({ name, domain: domain || 'N/A', adSpend: document.getElementById('ac-spend').value || '$0/mo', socialFollowers: '0', topPlatform: 'Unknown', lastActivity: 'Just added', threat: document.getElementById('ac-threat').value });
+                renderCompetitors();
+                closeActionModal();
+                showToast('Now tracking "' + name + '"!', 'success');
             });
         });
 
