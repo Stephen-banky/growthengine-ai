@@ -291,14 +291,20 @@ try {
       }
     }
 
+    // Sanitize params: convert undefined to null (sql.js doesn't handle undefined)
+    _sanitize(params) {
+      return params.map(p => (p === undefined ? null : p));
+    }
+
     prepare(sql) {
       const self = this;
       return {
         get(...params) {
           self._ensureReady();
           try {
+            const clean = self._sanitize(params);
             const stmt = self._db.prepare(sql);
-            if (params.length > 0) stmt.bind(params);
+            if (clean.length > 0) stmt.bind(clean);
             if (stmt.step()) {
               const cols = stmt.getColumnNames();
               const vals = stmt.get();
@@ -317,9 +323,10 @@ try {
         all(...params) {
           self._ensureReady();
           try {
+            const clean = self._sanitize(params);
             const results = [];
             const stmt = self._db.prepare(sql);
-            if (params.length > 0) stmt.bind(params);
+            if (clean.length > 0) stmt.bind(clean);
             while (stmt.step()) {
               const cols = stmt.getColumnNames();
               const vals = stmt.get();
@@ -337,7 +344,8 @@ try {
         run(...params) {
           self._ensureReady();
           try {
-            self._db.run(sql, params);
+            const clean = self._sanitize(params);
+            self._db.run(sql, clean);
             return { changes: self._db.getRowsModified(), lastInsertRowid: 0 };
           } catch(e) {
             console.error('[DB] prepare.run error:', e.message, 'SQL:', sql);
