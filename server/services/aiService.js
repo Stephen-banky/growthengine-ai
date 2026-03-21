@@ -26,19 +26,24 @@ async function callClaude(systemPrompt, userPrompt, options = {}) {
     return generateDemoResponse(userPrompt, options.demoType);
   }
 
-  const response = await client.messages.create({
-    model: options.model || 'claude-sonnet-4-20250514',
-    max_tokens: options.maxTokens || 4096,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userPrompt + '\n\nReturn ONLY valid JSON, no markdown or code blocks.' }],
-    temperature: options.temperature || 0.7
-  });
+  try {
+    const response = await client.messages.create({
+      model: options.model || 'claude-sonnet-4-20250514',
+      max_tokens: options.maxTokens || 4096,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt + '\n\nReturn ONLY valid JSON, no markdown or code blocks.' }],
+      temperature: options.temperature || 0.7
+    });
 
-  const text = response.content[0].text;
-  // Extract JSON from response (handle if wrapped in markdown code blocks)
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error('Failed to parse AI response as JSON');
-  return JSON.parse(jsonMatch[0]);
+    const text = response.content[0].text;
+    // Extract JSON from response (handle if wrapped in markdown code blocks)
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Failed to parse AI response as JSON');
+    return JSON.parse(jsonMatch[0]);
+  } catch (apiError) {
+    console.log('[AI] Claude API error, falling back to demo mode:', apiError.message);
+    return generateDemoResponse(userPrompt, options.demoType);
+  }
 }
 
 // ==================== DEMO MODE RESPONSES ====================
