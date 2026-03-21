@@ -31,13 +31,15 @@ app.use('/api/ai', require('./routes/ai'));
 app.use('/api/media', require('./routes/media'));
 app.use('/api/recruitment', require('./routes/recruitment'));
 
-// Serve React build in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html'));
-  });
-}
+// Serve static files from project root (index.html dashboard)
+app.use(express.static(path.join(__dirname, '..')));
+
+// Fallback: serve index.html for any non-API route
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
+  }
+});
 
 // WebSocket for real-time updates
 io.on('connection', (socket) => {
