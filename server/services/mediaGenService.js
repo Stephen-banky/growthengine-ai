@@ -1,24 +1,23 @@
 const axios = require('axios');
-const OpenAI = require('openai');
 
-// Lazy-init to prevent crash when API key isn't set
+// Lazy OpenAI client for DALL-E image generation (separate from main AI service)
 let _openai = null;
-const openai = new Proxy({}, {
-  get(_, prop) {
-    if (!_openai) {
-      const key = process.env.OPENAI_API_KEY;
-      if (!key) throw new Error('OPENAI_API_KEY not configured');
-      _openai = new OpenAI({ apiKey: key });
-    }
-    return _openai[prop];
-  }
-});
+function getOpenAIForImages() {
+  if (_openai) return _openai;
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) return null;
+  const OpenAI = require('openai');
+  _openai = new OpenAI({ apiKey: key });
+  return _openai;
+}
 
 class MediaGenService {
   // ==================== IMAGE GENERATION ====================
 
   // OpenAI DALL-E 3
   static async generateImageDALLE(prompt, options = {}) {
+    const openai = getOpenAIForImages();
+    if (!openai) throw new Error('OPENAI_API_KEY required for DALL-E image generation. Add it in Netlify Environment Variables.');
     const response = await openai.images.generate({
       model: 'dall-e-3',
       prompt: `Professional marketing image: ${prompt}`,

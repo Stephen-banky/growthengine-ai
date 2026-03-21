@@ -12,6 +12,7 @@
     "dev": "NODE_ENV=development concurrently \"nodemon server/index.js\" \"cd client && npm start\""
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
     "axios": "^1.6.2",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^9.4.3",
