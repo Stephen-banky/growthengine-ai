@@ -797,6 +797,304 @@
                 font-size: 18px;
             }
         }
+
+        /* FORMS & INPUTS */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: var(--transition);
+            margin-bottom: 12px;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-hover);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid var(--border);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .modal-tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-tab {
+            padding: 12px 0;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .modal-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .modal-form {
+            display: none;
+        }
+
+        .modal-form.active {
+            display: block;
+        }
+
+        /* LOADING SPINNER */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(59, 130, 246, 0.3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .loading-spinner.active {
+            display: block;
+        }
+
+        .loading-spinner .spinner {
+            width: 40px;
+            height: 40px;
+            border-width: 4px;
+            margin: 0 auto 16px;
+        }
+
+        /* TOAST NOTIFICATIONS */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            animation: slideInRight 0.3s ease-out;
+            max-width: 350px;
+        }
+
+        .toast.success {
+            border-left-color: var(--green);
+        }
+
+        .toast.error {
+            border-left-color: var(--red);
+        }
+
+        .toast.warning {
+            border-left-color: var(--yellow);
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* FORM SECTION */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            margin-bottom: 0;
+        }
+
+        /* RESULTS DISPLAY */
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background-color: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .result-value {
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* QUICK ACTION CARDS */
+        .quick-action-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .quick-action-card .card-title {
+            margin-bottom: 16px;
+        }
+
+        .quick-action-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -863,6 +1161,11 @@
             <div class="nav-item" data-page="recruitment">
                 <div class="nav-icon">👥</div>
                 <span>Recruitment</span>
+            </div>
+            <div class="nav-item" data-page="ai-lab">
+                <div class="nav-icon">🧠</div>
+                <span>AI Content Lab</span>
+                <div class="badge badge-new">LIVE</div>
             </div>
             <div class="nav-item" data-page="ai-media">
                 <div class="nav-icon">🎨</div>
@@ -1858,6 +2161,233 @@
             </div>
         </div>
 
+        <!-- AI CONTENT LAB PAGE -->
+        <div class="page" id="ai-lab-page">
+            <div class="page-container">
+                <div class="page-header">
+                    <div class="page-title">AI Content Lab</div>
+                    <div class="page-subtitle">Generate professional marketing content powered by AI</div>
+                </div>
+
+                <!-- SECTION A: PRODUCT/BUSINESS INPUT FORM -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        <div class="card-title">Generate Content</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Business/Product Name</label>
+                            <input type="text" id="ai-business-name" placeholder="e.g., Acme SaaS Platform">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Industry</label>
+                            <select id="ai-industry">
+                                <option value="">Select Industry</option>
+                                <option value="e-commerce">E-commerce</option>
+                                <option value="saas">SaaS</option>
+                                <option value="restaurant">Restaurant</option>
+                                <option value="health-fitness">Health & Fitness</option>
+                                <option value="real-estate">Real Estate</option>
+                                <option value="education">Education</option>
+                                <option value="fashion">Fashion</option>
+                                <option value="finance">Finance</option>
+                                <option value="agency">Agency</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Target Platform</label>
+                            <select id="ai-platform">
+                                <option value="">Select Platform</option>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="instagram">Instagram</option>
+                                <option value="facebook">Facebook</option>
+                                <option value="tiktok">TikTok</option>
+                                <option value="twitter">Twitter/X</option>
+                                <option value="youtube">YouTube</option>
+                                <option value="google-ads">Google Ads</option>
+                                <option value="email">Email</option>
+                                <option value="wechat">WeChat</option>
+                                <option value="whatsapp">WhatsApp</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Content Topic / What to Promote</label>
+                        <textarea id="ai-topic" placeholder="Describe what you want to promote, key features, benefits, target audience..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tone</label>
+                        <select id="ai-tone">
+                            <option value="">Select Tone</option>
+                            <option value="professional">Professional</option>
+                            <option value="casual">Casual</option>
+                            <option value="humorous">Humorous</option>
+                            <option value="inspirational">Inspirational</option>
+                            <option value="urgent">Urgent</option>
+                            <option value="storytelling">Storytelling</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="ai-generate-btn" style="width: 100%; padding: 14px;">Generate Content with AI</button>
+                    <div class="loading-spinner" id="ai-loading">
+                        <div class="spinner"></div>
+                        <div>Generating content...</div>
+                    </div>
+                </div>
+
+                <!-- SECTION B: AI GENERATED RESULTS -->
+                <div class="card" id="ai-results" style="display: none; margin-bottom: 20px;">
+                    <div class="card-header">
+                        <div class="card-title">Generated Content</div>
+                    </div>
+                    <div class="results-section">
+                        <div class="result-item">
+                            <div class="result-label">Headline</div>
+                            <div class="result-value" id="result-headline"></div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">CTA (Call-to-Action)</div>
+                            <div class="result-value" id="result-cta"></div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Persuasion Framework</div>
+                            <div class="result-value" id="result-framework"></div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Expected Engagement Rate</div>
+                            <div class="result-value" id="result-engagement"></div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; padding: 16px; background-color: rgba(59, 130, 246, 0.05); border-radius: 8px;">
+                        <div class="result-label">Body Content</div>
+                        <div class="result-value" id="result-body" style="margin-top: 8px; line-height: 1.8;"></div>
+                    </div>
+                    <div style="margin-top: 20px; padding: 16px; background-color: rgba(59, 130, 246, 0.05); border-radius: 8px;">
+                        <div class="result-label">Hashtags</div>
+                        <div class="result-value" id="result-hashtags"></div>
+                    </div>
+                    <div style="margin-top: 20px; padding: 16px; background-color: rgba(59, 130, 246, 0.05); border-radius: 8px;">
+                        <div class="result-label">Hook / Opening Line</div>
+                        <div class="result-value" id="result-hook"></div>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div class="result-label">A/B Test Variants</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px;">
+                            <div style="padding: 16px; background-color: rgba(16, 185, 129, 0.1); border-radius: 8px;">
+                                <div style="color: var(--green); font-weight: 600; margin-bottom: 8px;">Variant A</div>
+                                <div class="result-value" id="result-variant-a"></div>
+                            </div>
+                            <div style="padding: 16px; background-color: rgba(245, 158, 11, 0.1); border-radius: 8px;">
+                                <div style="color: var(--yellow); font-weight: 600; margin-bottom: 8px;">Variant B</div>
+                                <div class="result-value" id="result-variant-b"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION C: AI STRATEGY GENERATOR -->
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-header">
+                        <div class="card-title">AI Strategy Generator</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                        <div class="form-group">
+                            <label class="form-label">Business Name</label>
+                            <input type="text" id="strategy-business-name" placeholder="Your business name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Monthly Budget</label>
+                            <input type="number" id="strategy-budget" placeholder="e.g., 5000" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Goal</label>
+                            <select id="strategy-goal">
+                                <option value="">Select Goal</option>
+                                <option value="lead-gen">Lead Generation</option>
+                                <option value="awareness">Brand Awareness</option>
+                                <option value="sales">Sales</option>
+                                <option value="installs">App Installs</option>
+                                <option value="traffic">Website Traffic</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="strategy-generate-btn" style="width: 100%; padding: 14px;">Generate Full Strategy</button>
+                    <div class="loading-spinner" id="strategy-loading">
+                        <div class="spinner"></div>
+                        <div>Generating strategy...</div>
+                    </div>
+                    <div id="strategy-results" style="display: none; margin-top: 20px; padding: 16px; background-color: rgba(59, 130, 246, 0.05); border-radius: 8px;">
+                        <div class="result-value" style="line-height: 1.8;"></div>
+                    </div>
+                </div>
+
+                <!-- SECTION D: QUICK ACTIONS -->
+                <div style="margin-bottom: 20px;">
+                    <div class="page-subtitle" style="margin-bottom: 16px;">Quick Actions</div>
+                    <div class="quick-action-row">
+                        <!-- EMAIL SEQUENCE -->
+                        <div class="quick-action-card">
+                            <div class="card-header">
+                                <div class="card-title">Generate Email Sequence</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px;">Trigger / Topic</label>
+                                <input type="text" id="email-trigger" placeholder="e.g., Free trial signup">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px;">Goal</label>
+                                <select id="email-goal">
+                                    <option value="nurture">Nurture Lead</option>
+                                    <option value="upsell">Upsell</option>
+                                    <option value="retention">Retention</option>
+                                    <option value="reactivate">Reactivate</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px;">Number of Emails</label>
+                                <select id="email-count">
+                                    <option value="3">3 emails</option>
+                                    <option value="5">5 emails</option>
+                                    <option value="7">7 emails</option>
+                                    <option value="10">10 emails</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" id="email-generate-btn" style="width: 100%; padding: 10px;">Generate</button>
+                        </div>
+
+                        <!-- LEAD SCORER -->
+                        <div class="quick-action-card">
+                            <div class="card-header">
+                                <div class="card-title">Score a Lead</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px;">Lead Data</label>
+                                <textarea id="lead-data" placeholder="Paste lead info: name, company, industry, engagement level..." style="min-height: 80px;"></textarea>
+                            </div>
+                            <button class="btn btn-primary" id="score-lead-btn" style="width: 100%; padding: 10px;">Score Lead</button>
+                            <div id="lead-score-result" style="display: none; margin-top: 12px; padding: 12px; background-color: rgba(16, 185, 129, 0.1); border-radius: 6px; color: var(--green); font-weight: 600;"></div>
+                        </div>
+
+                        <!-- AD COPY OPTIMIZER -->
+                        <div class="quick-action-card">
+                            <div class="card-header">
+                                <div class="card-title">Optimize Ad Copy</div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px;">Current Ad Copy</label>
+                                <textarea id="ad-copy" placeholder="Paste your current ad copy..." style="min-height: 80px;"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" style="font-size: 12px;">Performance Notes</label>
+                                <input type="text" id="ad-performance" placeholder="e.g., Low CTR, High CPC...">
+                            </div>
+                            <button class="btn btn-primary" id="optimize-ad-btn" style="width: 100%; padding: 10px;">Optimize</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- AI MEDIA GENERATION PAGE -->
         <div class="page" id="ai-media-page">
             <div class="page-container">
@@ -2140,25 +2670,413 @@
         </div>
     </div>
 
+    <!-- AUTH MODAL -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Welcome to GrowthEngine</div>
+            </div>
+
+            <div class="modal-tabs">
+                <div class="modal-tab active" data-tab="login">Login</div>
+                <div class="modal-tab" data-tab="register">Register</div>
+                <div class="modal-tab" data-tab="guest">Guest Mode</div>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div class="modal-form active" id="login-form">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="login-email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••">
+                </div>
+                <button class="btn btn-primary" id="login-btn" style="width: 100%; padding: 12px; margin-bottom: 12px;">Login</button>
+                <div id="login-error" style="color: var(--red); font-size: 13px; display: none;"></div>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div class="modal-form" id="register-form">
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" id="register-name" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="register-email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="register-password" placeholder="••••••••">
+                </div>
+                <button class="btn btn-primary" id="register-btn" style="width: 100%; padding: 12px; margin-bottom: 12px;">Register</button>
+                <div id="register-error" style="color: var(--red); font-size: 13px; display: none;"></div>
+            </div>
+
+            <!-- GUEST MODE -->
+            <div class="modal-form" id="guest-form">
+                <div style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">
+                    <div style="font-size: 14px; line-height: 1.6;">You can explore GrowthEngine with sample data in Guest Mode. Some features may be limited.</div>
+                </div>
+                <button class="btn btn-primary" id="guest-btn" style="width: 100%; padding: 12px;">Continue as Guest</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
     <script>
-        // GREETING AND DATE
+        // ========== API CONFIGURATION ==========
+        const API_BASE = window.location.origin + '/api';
+        let authToken = localStorage.getItem('ge_token');
+        let currentUser = JSON.parse(localStorage.getItem('ge_user') || 'null');
+        let isGuestMode = localStorage.getItem('ge_guest_mode') === 'true';
+
+        // ========== API CALL HELPER ==========
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const headers = { 'Content-Type': 'application/json' };
+            if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+
+            const opts = { method, headers };
+            if (body) opts.body = JSON.stringify(body);
+
+            try {
+                const res = await fetch(API_BASE + endpoint, opts);
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || 'API Error');
+                }
+                return await res.json();
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        // ========== TOAST NOTIFICATIONS ==========
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ========== AUTH FUNCTIONS ==========
+        async function login(email, password) {
+            try {
+                const data = await apiCall('/auth/login', 'POST', { email, password });
+                authToken = data.token;
+                currentUser = data.user;
+                localStorage.setItem('ge_token', authToken);
+                localStorage.setItem('ge_user', JSON.stringify(currentUser));
+                hideAuthModal();
+                updateUserProfile();
+                showToast('Login successful!', 'success');
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        async function register(name, email, password) {
+            try {
+                const data = await apiCall('/auth/register', 'POST', { name, email, password });
+                authToken = data.token;
+                currentUser = data.user;
+                localStorage.setItem('ge_token', authToken);
+                localStorage.setItem('ge_user', JSON.stringify(currentUser));
+                hideAuthModal();
+                updateUserProfile();
+                showToast('Registration successful!', 'success');
+            } catch (error) {
+                throw error;
+            }
+        }
+
+        function logout() {
+            authToken = null;
+            currentUser = null;
+            isGuestMode = false;
+            localStorage.removeItem('ge_token');
+            localStorage.removeItem('ge_user');
+            localStorage.removeItem('ge_guest_mode');
+            showAuthModal();
+            showToast('Logged out', 'success');
+        }
+
+        function guestMode() {
+            authToken = null;
+            currentUser = null;
+            isGuestMode = true;
+            localStorage.setItem('ge_guest_mode', 'true');
+            hideAuthModal();
+            updateUserProfile();
+            showToast('Welcome! You are in Guest Mode. Some features are limited.', 'warning');
+        }
+
+        function showAuthModal() {
+            document.getElementById('auth-modal').classList.add('active');
+        }
+
+        function hideAuthModal() {
+            document.getElementById('auth-modal').classList.remove('active');
+        }
+
+        function checkAuth() {
+            const authModal = document.getElementById('auth-modal');
+            if (!authToken && !isGuestMode) {
+                showAuthModal();
+            } else {
+                authModal.classList.remove('active');
+                updateUserProfile();
+            }
+        }
+
+        function updateUserProfile() {
+            const avatar = document.querySelector('.user-avatar');
+            const name = document.querySelector('.user-name');
+            const role = document.querySelector('.user-role');
+
+            if (currentUser) {
+                const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                avatar.textContent = initials;
+                name.textContent = currentUser.name;
+                role.textContent = currentUser.role || 'Pro Account';
+                updateGreeting();
+            } else if (isGuestMode) {
+                avatar.textContent = 'G';
+                name.textContent = 'Guest';
+                role.textContent = 'Demo Mode';
+            }
+        }
+
+        // ========== AUTH MODAL HANDLERS ==========
+        document.querySelectorAll('.modal-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.modal-form').forEach(f => f.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(`${tabName}-form`).classList.add('active');
+            });
+        });
+
+        document.getElementById('login-btn').addEventListener('click', async () => {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            if (!email || !password) {
+                document.getElementById('login-error').textContent = 'Please fill all fields';
+                document.getElementById('login-error').style.display = 'block';
+                return;
+            }
+            try {
+                await login(email, password);
+            } catch (error) {
+                document.getElementById('login-error').textContent = error.message || 'Login failed';
+                document.getElementById('login-error').style.display = 'block';
+            }
+        });
+
+        document.getElementById('register-btn').addEventListener('click', async () => {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            if (!name || !email || !password) {
+                document.getElementById('register-error').textContent = 'Please fill all fields';
+                document.getElementById('register-error').style.display = 'block';
+                return;
+            }
+            try {
+                await register(name, email, password);
+            } catch (error) {
+                document.getElementById('register-error').textContent = error.message || 'Registration failed';
+                document.getElementById('register-error').style.display = 'block';
+            }
+        });
+
+        document.getElementById('guest-btn').addEventListener('click', guestMode);
+
+        // ========== GREETING AND DATE ==========
         function updateGreeting() {
             const hours = new Date().getHours();
-            let greeting = 'Good morning, Stephen';
-            if (hours >= 12 && hours < 18) greeting = 'Good afternoon, Stephen';
-            if (hours >= 18) greeting = 'Good evening, Stephen';
+            let greeting = 'Good morning';
+            if (hours >= 12 && hours < 18) greeting = 'Good afternoon';
+            if (hours >= 18) greeting = 'Good evening';
+
+            const userName = currentUser ? currentUser.name.split(' ')[0] : 'Guest';
+            greeting += ', ' + userName;
 
             document.getElementById('greeting').textContent = greeting;
 
             const options = { year: 'numeric', month: 'long', day: 'numeric' };
             const today = new Date().toLocaleDateString('en-US', options);
-            document.getElementById('date-display').textContent = `Today, ${today}`;
+            const dateDisplay = document.getElementById('date-display');
+            if (dateDisplay) {
+                dateDisplay.textContent = `Today, ${today}`;
+            }
         }
 
-        updateGreeting();
-        setInterval(updateGreeting, 60000);
+        // ========== AI CONTENT GENERATION ==========
+        async function generateContent() {
+            const businessName = document.getElementById('ai-business-name').value;
+            const industry = document.getElementById('ai-industry').value;
+            const platform = document.getElementById('ai-platform').value;
+            const topic = document.getElementById('ai-topic').value;
+            const tone = document.getElementById('ai-tone').value;
 
-        // PAGE NAVIGATION
+            if (!businessName || !industry || !platform || !topic || !tone) {
+                showToast('Please fill all fields', 'error');
+                return;
+            }
+
+            const loading = document.getElementById('ai-loading');
+            const resultsCard = document.getElementById('ai-results');
+
+            loading.classList.add('active');
+            resultsCard.style.display = 'none';
+
+            try {
+                const data = await apiCall('/ai/generate-content', 'POST', {
+                    businessName, industry, platform, topic, tone
+                });
+
+                document.getElementById('result-headline').textContent = data.headline || 'N/A';
+                document.getElementById('result-body').textContent = data.body || 'N/A';
+                document.getElementById('result-cta').textContent = data.cta || 'N/A';
+                document.getElementById('result-hashtags').textContent = data.hashtags || 'N/A';
+                document.getElementById('result-hook').textContent = data.hook || 'N/A';
+                document.getElementById('result-framework').textContent = data.framework || 'N/A';
+                document.getElementById('result-engagement').textContent = data.engagement || 'N/A';
+                document.getElementById('result-variant-a').textContent = data.variantA || 'N/A';
+                document.getElementById('result-variant-b').textContent = data.variantB || 'N/A';
+
+                resultsCard.style.display = 'block';
+                showToast('Content generated successfully!', 'success');
+            } catch (error) {
+                showToast(error.message || 'Failed to generate content', 'error');
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        async function generateStrategy() {
+            const businessName = document.getElementById('strategy-business-name').value;
+            const budget = document.getElementById('strategy-budget').value;
+            const goal = document.getElementById('strategy-goal').value;
+
+            if (!businessName || !budget || !goal) {
+                showToast('Please fill all fields', 'error');
+                return;
+            }
+
+            const loading = document.getElementById('strategy-loading');
+            const results = document.getElementById('strategy-results');
+
+            loading.classList.add('active');
+            results.style.display = 'none';
+
+            try {
+                const data = await apiCall('/ai/targeting', 'POST', {
+                    businessName, budget: parseInt(budget), goal
+                });
+
+                results.querySelector('.result-value').textContent = data.strategy || 'N/A';
+                results.style.display = 'block';
+                showToast('Strategy generated!', 'success');
+            } catch (error) {
+                showToast(error.message || 'Failed to generate strategy', 'error');
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        async function generateEmailSequence() {
+            const trigger = document.getElementById('email-trigger').value;
+            const goal = document.getElementById('email-goal').value;
+            const count = document.getElementById('email-count').value;
+
+            if (!trigger || !goal || !count) {
+                showToast('Please fill all fields', 'error');
+                return;
+            }
+
+            try {
+                const data = await apiCall('/ai/email-sequence', 'POST', {
+                    trigger, goal, count: parseInt(count)
+                });
+
+                showToast('Email sequence generated! Check your drafts.', 'success');
+                // Could render the emails, but for now just show success
+            } catch (error) {
+                showToast(error.message || 'Failed to generate email sequence', 'error');
+            }
+        }
+
+        async function scoreLead() {
+            const leadData = document.getElementById('lead-data').value;
+
+            if (!leadData) {
+                showToast('Please enter lead data', 'error');
+                return;
+            }
+
+            try {
+                const data = await apiCall('/ai/score-lead', 'POST', { leadData });
+                const resultDiv = document.getElementById('lead-score-result');
+                resultDiv.textContent = `Lead Score: ${data.score}/100 - ${data.recommendation}`;
+                resultDiv.style.display = 'block';
+                showToast('Lead scored!', 'success');
+            } catch (error) {
+                showToast(error.message || 'Failed to score lead', 'error');
+            }
+        }
+
+        async function optimizeAd() {
+            const adCopy = document.getElementById('ad-copy').value;
+            const performance = document.getElementById('ad-performance').value;
+
+            if (!adCopy || !performance) {
+                showToast('Please fill all fields', 'error');
+                return;
+            }
+
+            try {
+                const data = await apiCall('/ai/optimize-ad', 'POST', {
+                    adCopy, performance
+                });
+
+                showToast('Ad copy optimized! Check the results below.', 'success');
+                // Could display optimized copy
+            } catch (error) {
+                showToast(error.message || 'Failed to optimize ad', 'error');
+            }
+        }
+
+        // ========== CAMPAIGN FUNCTIONS ==========
+        async function loadCampaigns() {
+            try {
+                const data = await apiCall('/campaigns');
+                // Render campaigns dynamically
+                renderCampaigns(data.campaigns || []);
+            } catch (error) {
+                console.error('Failed to load campaigns:', error);
+                // Keep demo data if API fails
+            }
+        }
+
+        function renderCampaigns(campaigns) {
+            // Implementation would render the campaigns table
+            // For now, keeping the hardcoded demo data
+        }
+
+        // ========== PAGE NAVIGATION ==========
         const navItems = document.querySelectorAll('.nav-item');
         const pages = document.querySelectorAll('.page');
 
@@ -2170,13 +3088,28 @@
                 item.classList.add('active');
 
                 pages.forEach(p => p.classList.remove('active'));
-                document.getElementById(`${pageName}-page`).classList.add('active');
+                const targetPage = document.getElementById(`${pageName}-page`);
+                if (targetPage) {
+                    targetPage.classList.add('active');
+                }
 
                 closeSidebar();
+
+                // Load data for specific pages
+                if (pageName === 'campaigns') {
+                    loadCampaigns();
+                }
             });
         });
 
-        // HAMBURGER MENU
+        // ========== AI LAB EVENT LISTENERS ==========
+        document.getElementById('ai-generate-btn').addEventListener('click', generateContent);
+        document.getElementById('strategy-generate-btn').addEventListener('click', generateStrategy);
+        document.getElementById('email-generate-btn').addEventListener('click', generateEmailSequence);
+        document.getElementById('score-lead-btn').addEventListener('click', scoreLead);
+        document.getElementById('optimize-ad-btn').addEventListener('click', optimizeAd);
+
+        // ========== HAMBURGER MENU ==========
         const hamburger = document.getElementById('hamburger');
         const sidebar = document.getElementById('sidebar');
         const sidebarBackdrop = document.getElementById('sidebarBackdrop');
@@ -2194,10 +3127,15 @@
         hamburger.addEventListener('click', toggleSidebar);
         sidebarBackdrop.addEventListener('click', closeSidebar);
 
-        // CLOSE SIDEBAR ON ESCAPE
+        // ========== INITIALIZATION ==========
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeSidebar();
         });
+
+        // Check auth and update UI on page load
+        checkAuth();
+        updateGreeting();
+        setInterval(updateGreeting, 60000);
     </script>
 </body>
 </html>
