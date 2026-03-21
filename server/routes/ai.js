@@ -5,13 +5,22 @@ const db = require('../../config/database');
 
 router.use(authenticateToken);
 
+// Helper: get business info or fallback defaults (handles in-memory DB reset in serverless)
+function getBusinessInfo(userId) {
+  try {
+    const business = db.prepare('SELECT * FROM businesses WHERE id = ?').get(userId);
+    if (business) return { name: business.name, industry: business.industry, website: business.website };
+  } catch (e) { /* db not ready or user not found */ }
+  return { name: 'My Business', industry: 'General', website: '' };
+}
+
 // Generate content for any platform
 router.post('/generate-content', async (req, res) => {
   try {
-    const business = db.prepare('SELECT * FROM businesses WHERE id = ?').get(req.user.id);
+    const businessInfo = getBusinessInfo(req.user.id);
     const result = await AIService.generateContent({
       ...req.body,
-      businessInfo: { name: business.name, industry: business.industry, website: business.website }
+      businessInfo
     });
     res.json(result);
   } catch (err) {
@@ -22,9 +31,9 @@ router.post('/generate-content', async (req, res) => {
 // Generate email sequence
 router.post('/email-sequence', async (req, res) => {
   try {
-    const business = db.prepare('SELECT * FROM businesses WHERE id = ?').get(req.user.id);
+    const businessInfo = getBusinessInfo(req.user.id);
     const result = await AIService.generateEmailSequence({
-      businessInfo: { name: business.name, industry: business.industry },
+      businessInfo,
       trigger: req.body.trigger,
       goal: req.body.goal,
       emailCount: req.body.emailCount
@@ -38,11 +47,8 @@ router.post('/email-sequence', async (req, res) => {
 // Generate targeting
 router.post('/targeting', async (req, res) => {
   try {
-    const business = db.prepare('SELECT * FROM businesses WHERE id = ?').get(req.user.id);
-    const result = await AIService.generateTargeting(
-      { name: business.name, industry: business.industry },
-      req.body.productInfo
-    );
+    const businessInfo = getBusinessInfo(req.user.id);
+    const result = await AIService.generateTargeting(businessInfo, req.body.productInfo);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -62,8 +68,8 @@ router.post('/optimize-ad', async (req, res) => {
 // Score lead
 router.post('/score-lead', async (req, res) => {
   try {
-    const business = db.prepare('SELECT * FROM businesses WHERE id = ?').get(req.user.id);
-    const result = await AIService.scoreLead(req.body.leadData, { name: business.name, industry: business.industry });
+    const businessInfo = getBusinessInfo(req.user.id);
+    const result = await AIService.scoreLead(req.body.leadData, businessInfo);
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
