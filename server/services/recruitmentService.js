@@ -2,13 +2,20 @@ const axios = require('axios');
 const AIService = require('./aiService');
 const PlatformService = require('./platformService');
 
+// Lazy OpenAI helper
+function getOpenAI() {
+  const OpenAI = require('openai');
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) throw new Error('OPENAI_API_KEY not configured');
+  return new OpenAI({ apiKey: key });
+}
+
 class RecruitmentService {
 
   // ==================== AI JOB AD GENERATION ====================
 
   static async generateJobAd(params) {
-    const OpenAI = require('openai');
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const openai = getOpenAI();
 
     const { role, company, industry, location, type, salary, requirements, benefits, tone, platforms } = params;
 
@@ -213,8 +220,7 @@ Return JSON:
 
   // Score applicant using AI
   static async scoreApplicant(applicantData, jobRequirements) {
-    const OpenAI = require('openai');
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const openai = getOpenAI();
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
@@ -252,8 +258,7 @@ Return: {
 
   // Generate personalized outreach to passive candidates
   static async generateCandidateOutreach(candidateProfile, jobInfo, channel) {
-    const OpenAI = require('openai');
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const openai = getOpenAI();
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o',

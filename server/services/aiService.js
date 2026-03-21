@@ -1,6 +1,19 @@
 const OpenAI = require('openai');
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Lazy-init OpenAI client so the app doesn't crash when the key isn't set
+let _openai = null;
+function getOpenAI() {
+  if (!_openai) {
+    const key = process.env.OPENAI_API_KEY;
+    if (!key) throw new Error('OPENAI_API_KEY is not configured. Add it in Netlify Environment Variables.');
+    _openai = new OpenAI({ apiKey: key });
+  }
+  return _openai;
+}
+// Backwards compat alias
+const openai = new Proxy({}, {
+  get(_, prop) { return getOpenAI()[prop]; }
+});
 
 class AIService {
   // Generate marketing content for any platform
