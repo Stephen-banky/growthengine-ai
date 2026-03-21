@@ -1609,7 +1609,7 @@
                         <option>Paused</option>
                         <option>Completed</option>
                     </select>
-                    <button class="btn btn-primary">+ New Campaign</button>
+                    <button class="btn btn-primary" id="new-campaign-btn">+ New Campaign</button>
                 </div>
 
                 <div class="card">
@@ -1755,7 +1755,7 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <button class="btn btn-primary">+ Create Automation</button>
+                    <button class="btn btn-primary" id="new-automation-btn">+ Create Automation</button>
                 </div>
 
                 <div class="grid-2">
@@ -1883,7 +1883,7 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <button class="btn btn-primary">+ Schedule Meeting</button>
+                    <button class="btn btn-primary" id="new-meeting-btn">+ Schedule Meeting</button>
                 </div>
 
                 <div class="grid-2">
@@ -1953,7 +1953,7 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <button class="btn btn-primary">+ Create Link</button>
+                    <button class="btn btn-primary" id="new-link-btn">+ Create Link</button>
                 </div>
 
                 <div class="card">
@@ -2020,8 +2020,8 @@
                     <div style="margin-bottom: 16px;">
                         <div class="card-title" style="margin-bottom: 12px;">Search Contacts</div>
                         <div class="input-group">
-                            <input type="text" placeholder="Name, email, or company...">
-                            <button class="btn btn-primary">Search</button>
+                            <input type="text" id="contact-search-input" placeholder="Name, email, or company...">
+                            <button class="btn btn-primary" id="contact-search-btn">Search</button>
                         </div>
                     </div>
 
@@ -2079,6 +2079,11 @@
                 <div class="page-header">
                     <div class="page-title">Recruitment Pipeline</div>
                     <div class="page-subtitle">Manage hiring with Kanban board view</div>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                    <button class="btn btn-primary" id="new-job-ad-btn">+ Create Job Ad with AI</button>
+                    <button class="btn btn-secondary" id="recruitment-campaign-btn">Launch Recruitment Campaign</button>
                 </div>
 
                 <div class="kanban-container">
@@ -2725,6 +2730,21 @@
         </div>
     </div>
 
+    <!-- ACTION MODAL (generic reusable modal for all forms) -->
+    <div class="modal-overlay" id="action-modal" style="display:none;">
+        <div class="modal-content" style="max-width: 560px;">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="modal-title" id="action-modal-title">Action</div>
+                <div id="action-modal-close" style="cursor:pointer; font-size:24px; color:var(--text-muted);">&times;</div>
+            </div>
+            <div id="action-modal-body" style="padding: 16px 0;"></div>
+            <div style="display:flex; gap:12px; justify-content:flex-end; padding-top:12px; border-top:1px solid var(--border);">
+                <button class="btn btn-secondary" id="action-modal-cancel">Cancel</button>
+                <button class="btn btn-primary" id="action-modal-submit">Submit</button>
+            </div>
+        </div>
+    </div>
+
     <!-- TOAST CONTAINER -->
     <div class="toast-container" id="toast-container"></div>
 
@@ -3119,6 +3139,331 @@
         document.getElementById('email-generate-btn').addEventListener('click', generateEmailSequence);
         document.getElementById('score-lead-btn').addEventListener('click', scoreLead);
         document.getElementById('optimize-ad-btn').addEventListener('click', optimizeAd);
+
+        // ========== ACTION MODAL SYSTEM ==========
+        const actionModal = document.getElementById('action-modal');
+        const actionModalTitle = document.getElementById('action-modal-title');
+        const actionModalBody = document.getElementById('action-modal-body');
+        const actionModalSubmit = document.getElementById('action-modal-submit');
+        let currentModalCallback = null;
+
+        function openActionModal(title, bodyHTML, submitLabel, onSubmit) {
+            actionModalTitle.textContent = title;
+            actionModalBody.innerHTML = bodyHTML;
+            actionModalSubmit.textContent = submitLabel || 'Submit';
+            actionModal.style.display = 'flex';
+            currentModalCallback = onSubmit;
+        }
+
+        function closeActionModal() {
+            actionModal.style.display = 'none';
+            actionModalBody.innerHTML = '';
+            currentModalCallback = null;
+        }
+
+        document.getElementById('action-modal-close').addEventListener('click', closeActionModal);
+        document.getElementById('action-modal-cancel').addEventListener('click', closeActionModal);
+        actionModal.addEventListener('click', (e) => { if (e.target === actionModal) closeActionModal(); });
+        actionModalSubmit.addEventListener('click', () => { if (currentModalCallback) currentModalCallback(); });
+
+        // ========== NEW CAMPAIGN ==========
+        document.getElementById('new-campaign-btn').addEventListener('click', () => {
+            openActionModal('Create New Campaign', `
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Campaign Name</label>
+                    <input type="text" id="mc-name" placeholder="e.g., Summer Sale Push" style="width:100%;"></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Platform</label>
+                    <select id="mc-platform" style="width:100%;"><option value="">Select Platform</option><option>Facebook</option><option>Instagram</option><option>LinkedIn</option><option>Google Ads</option><option>TikTok</option><option>Twitter/X</option><option>Email</option><option>Multi-channel</option></select></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Budget ($)</label>
+                        <input type="number" id="mc-budget" placeholder="5000" style="width:100%;"></div>
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Goal</label>
+                        <select id="mc-goal" style="width:100%;"><option>Lead Generation</option><option>Brand Awareness</option><option>Conversions</option><option>Traffic</option><option>Engagement</option></select></div>
+                    </div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Target Audience</label>
+                    <input type="text" id="mc-audience" placeholder="e.g., SaaS founders aged 25-45" style="width:100%;"></div>
+                </div>
+            `, 'Create Campaign', () => {
+                const name = document.getElementById('mc-name').value;
+                const platform = document.getElementById('mc-platform').value;
+                const budget = document.getElementById('mc-budget').value;
+                if (!name || !platform || !budget) { showToast('Please fill all required fields', 'error'); return; }
+                // Add to campaigns table
+                const tbody = document.querySelector('#campaigns-page tbody');
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style="font-weight:600;">${name}</td><td><span class="platform-badge">${platform}</span></td><td><span class="trend trend-up">Active</span></td><td>$${parseInt(budget).toLocaleString()}</td><td>$0</td><td style="color:var(--green);font-weight:600;">--</td><td>0</td>`;
+                tbody.prepend(tr);
+                closeActionModal();
+                showToast('Campaign "' + name + '" created!', 'success');
+            });
+        });
+
+        // ========== CREATE AUTOMATION ==========
+        document.getElementById('new-automation-btn').addEventListener('click', () => {
+            openActionModal('Create DM Automation', `
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Automation Name</label>
+                    <input type="text" id="ma-name" placeholder="e.g., Welcome DM sequence" style="width:100%;"></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Trigger</label>
+                    <select id="ma-trigger" style="width:100%;"><option>New Follower</option><option>Keyword Match</option><option>Message Received</option><option>Comment</option><option>Story Mention</option></select></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Auto-Reply Message</label>
+                    <textarea id="ma-message" placeholder="Hey! Thanks for reaching out..." style="width:100%;height:80px;"></textarea></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Platform</label>
+                    <select id="ma-platform" style="width:100%;"><option>Instagram</option><option>WhatsApp</option><option>Facebook Messenger</option><option>LinkedIn</option><option>Twitter/X</option></select></div>
+                </div>
+            `, 'Create Automation', () => {
+                const name = document.getElementById('ma-name').value;
+                const trigger = document.getElementById('ma-trigger').value;
+                if (!name) { showToast('Please enter a name', 'error'); return; }
+                const grid = document.querySelector('#dm-automations-page .grid-2');
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<div class="card-header"><div class="card-title">${name}</div></div><div style="margin-bottom:12px;"><div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;">Trigger: ${trigger}</div><div style="font-size:13px;">Custom automation created just now</div></div><div style="display:flex;gap:8px;"><button class="btn btn-sm btn-secondary">Edit</button><button class="btn btn-sm btn-secondary">Active</button></div>`;
+                grid.prepend(card);
+                closeActionModal();
+                showToast('Automation "' + name + '" created!', 'success');
+            });
+        });
+
+        // ========== SCHEDULE MEETING ==========
+        document.getElementById('new-meeting-btn').addEventListener('click', () => {
+            openActionModal('Schedule New Meeting', `
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Meeting Title</label>
+                    <input type="text" id="mm-title" placeholder="e.g., Client Demo - Acme Corp" style="width:100%;"></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Date & Time</label>
+                        <input type="datetime-local" id="mm-date" style="width:100%;"></div>
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Duration</label>
+                        <select id="mm-duration" style="width:100%;"><option value="30">30 min</option><option value="60">60 min</option><option value="90">90 min</option></select></div>
+                    </div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Type</label>
+                    <select id="mm-type" style="width:100%;"><option>Demo</option><option>Follow-up</option><option>Internal</option><option>Standup</option><option>Strategy</option></select></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Attendees (comma separated)</label>
+                    <input type="text" id="mm-attendees" placeholder="john@company.com, jane@company.com" style="width:100%;"></div>
+                </div>
+            `, 'Schedule Meeting', () => {
+                const title = document.getElementById('mm-title').value;
+                const date = document.getElementById('mm-date').value;
+                const duration = document.getElementById('mm-duration').value;
+                const type = document.getElementById('mm-type').value;
+                const attendees = document.getElementById('mm-attendees').value;
+                if (!title || !date) { showToast('Please fill title and date', 'error'); return; }
+                const dateStr = new Date(date).toLocaleDateString('en-US', { weekday: 'long', hour: 'numeric', minute: '2-digit' });
+                const attCount = attendees ? attendees.split(',').length : 1;
+                const tbody = document.querySelector('#meetings-page tbody');
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style="font-weight:600;">${title}</td><td>${attCount} attendees</td><td>${dateStr}</td><td>${duration} min</td><td><span class="platform-badge">${type}</span></td><td><span class="trend trend-up">Confirmed</span></td>`;
+                tbody.prepend(tr);
+                closeActionModal();
+                showToast('Meeting "' + title + '" scheduled!', 'success');
+            });
+        });
+
+        // ========== CREATE TRACKING LINK ==========
+        document.getElementById('new-link-btn').addEventListener('click', () => {
+            openActionModal('Create Tracking Link', `
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Destination URL</label>
+                    <input type="url" id="ml-url" placeholder="https://yoursite.com/landing-page" style="width:100%;"></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Short Link Slug</label>
+                    <input type="text" id="ml-slug" placeholder="e.g., summer-sale" style="width:100%;"></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Campaign</label>
+                    <input type="text" id="ml-campaign" placeholder="e.g., Summer Campaign" style="width:100%;"></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">UTM Source</label>
+                        <input type="text" id="ml-source" placeholder="instagram" style="width:100%;"></div>
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">UTM Medium</label>
+                        <input type="text" id="ml-medium" placeholder="social" style="width:100%;"></div>
+                    </div>
+                </div>
+            `, 'Create Link', () => {
+                const url = document.getElementById('ml-url').value;
+                const slug = document.getElementById('ml-slug').value;
+                const campaign = document.getElementById('ml-campaign').value;
+                if (!url || !slug) { showToast('Please fill URL and slug', 'error'); return; }
+                const tbody = document.querySelector('#tracking-links-page tbody');
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td><span style="font-family:monospace;font-size:12px;">gre.ai/${slug}</span></td><td style="font-size:12px;">${url}</td><td><span class="platform-badge">${campaign || 'Custom'}</span></td><td style="font-weight:600;">0</td><td>--</td><td>Just now</td><td><span class="trend trend-up">Active</span></td>`;
+                tbody.prepend(tr);
+                closeActionModal();
+                showToast('Tracking link gre.ai/' + slug + ' created!', 'success');
+            });
+        });
+
+        // ========== CONTACT LOOKUP SEARCH ==========
+        document.getElementById('contact-search-btn').addEventListener('click', async () => {
+            const query = document.getElementById('contact-search-input').value;
+            if (!query) { showToast('Enter a search term', 'error'); return; }
+            showToast('Searching for "' + query + '"...', 'success');
+            const tbody = document.querySelector('#contact-lookup-page tbody');
+            // Generate mock enriched results based on query
+            const contacts = [
+                { name: query.includes('@') ? query.split('@')[0] : query, email: query.includes('@') ? query : query.toLowerCase().replace(/\s/g,'.') + '@company.com', company: 'TechCorp', title: 'Marketing Director', phone: '+1-555-' + Math.floor(1000+Math.random()*9000) },
+                { name: 'Similar: ' + (query.includes('@') ? query.split('@')[0] : query) + ' Jr.', email: 'similar@othercompany.com', company: 'StartupXYZ', title: 'Growth Lead', phone: '+1-555-' + Math.floor(1000+Math.random()*9000) }
+            ];
+            tbody.innerHTML = '';
+            contacts.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style="font-weight:600;">${c.name}</td><td>${c.email}</td><td>${c.company}</td><td>${c.title}</td><td>${c.phone}</td><td><span class="trend trend-up">Verified</span></td>`;
+                tbody.appendChild(tr);
+            });
+        });
+
+        // ========== RECRUITMENT - CREATE JOB AD WITH AI ==========
+        document.getElementById('new-job-ad-btn').addEventListener('click', () => {
+            openActionModal('Create AI Job Ad', `
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Job Title</label>
+                    <input type="text" id="mj-title" placeholder="e.g., Senior Full-Stack Developer" style="width:100%;"></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Company</label>
+                    <input type="text" id="mj-company" placeholder="Your company name" style="width:100%;"></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Location</label>
+                        <input type="text" id="mj-location" placeholder="Lagos, Nigeria" style="width:100%;"></div>
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Salary Range</label>
+                        <input type="text" id="mj-salary" placeholder="$60K - $90K" style="width:100%;"></div>
+                    </div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Key Requirements</label>
+                    <textarea id="mj-requirements" placeholder="React, Node.js, 3+ years experience..." style="width:100%;height:80px;"></textarea></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Platforms to Post</label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;" id="mj-platforms">
+                        <label style="font-size:13px;cursor:pointer;"><input type="checkbox" value="LinkedIn" checked> LinkedIn</label>
+                        <label style="font-size:13px;cursor:pointer;"><input type="checkbox" value="Indeed"> Indeed</label>
+                        <label style="font-size:13px;cursor:pointer;"><input type="checkbox" value="Twitter/X"> Twitter/X</label>
+                        <label style="font-size:13px;cursor:pointer;"><input type="checkbox" value="Facebook"> Facebook</label>
+                    </div></div>
+                </div>
+            `, 'Generate Job Ad with AI', async () => {
+                const title = document.getElementById('mj-title').value;
+                const company = document.getElementById('mj-company').value;
+                const location = document.getElementById('mj-location').value;
+                const salary = document.getElementById('mj-salary').value;
+                const requirements = document.getElementById('mj-requirements').value;
+                if (!title || !company) { showToast('Please fill job title and company', 'error'); return; }
+                actionModalSubmit.textContent = 'Generating...';
+                actionModalSubmit.disabled = true;
+                try {
+                    const data = await apiCall('/ai/generate-content', 'POST', {
+                        businessName: company, industry: 'recruitment', platform: 'linkedin',
+                        topic: 'Job posting for ' + title + ' in ' + location + '. Salary: ' + salary + '. Requirements: ' + requirements,
+                        tone: 'professional'
+                    });
+                    closeActionModal();
+                    // Show generated job ad
+                    openActionModal('Generated Job Ad: ' + title, `
+                        <div style="display:flex;flex-direction:column;gap:12px;">
+                            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:16px;">
+                                <div style="font-weight:700;font-size:16px;margin-bottom:8px;">${data.headline || title + ' - ' + company}</div>
+                                <div style="font-size:13px;white-space:pre-wrap;line-height:1.6;">${data.body || 'We are hiring a ' + title + ' at ' + company + '.'}</div>
+                                <div style="margin-top:12px;font-size:12px;color:var(--text-muted);">CTA: ${data.cta || 'Apply Now'}</div>
+                                <div style="margin-top:8px;font-size:12px;color:var(--primary);">${Array.isArray(data.hashtags) ? data.hashtags.join(' ') : (data.hashtags || '')}</div>
+                            </div>
+                            <div style="font-size:12px;color:var(--text-muted);">This ad will be posted to the selected platforms.</div>
+                        </div>
+                    `, 'Copy to Clipboard', () => {
+                        const text = (data.headline || title) + '\\n\\n' + (data.body || '') + '\\n\\n' + (data.cta || 'Apply Now');
+                        navigator.clipboard.writeText(text).then(() => showToast('Job ad copied to clipboard!', 'success'));
+                        closeActionModal();
+                    });
+                } catch (err) {
+                    showToast(err.message || 'Failed to generate job ad', 'error');
+                } finally {
+                    actionModalSubmit.textContent = 'Generate Job Ad with AI';
+                    actionModalSubmit.disabled = false;
+                }
+            });
+        });
+
+        // ========== RECRUITMENT CAMPAIGN ==========
+        document.getElementById('recruitment-campaign-btn').addEventListener('click', () => {
+            openActionModal('Launch Recruitment Campaign', `
+                <div style="display:flex;flex-direction:column;gap:14px;">
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Campaign Name</label>
+                    <input type="text" id="mr-name" placeholder="e.g., Q2 Engineering Hiring" style="width:100%;"></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Positions to Fill</label>
+                    <input type="text" id="mr-positions" placeholder="e.g., 3 developers, 1 designer" style="width:100%;"></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Budget ($)</label>
+                        <input type="number" id="mr-budget" placeholder="2000" style="width:100%;"></div>
+                        <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Duration</label>
+                        <select id="mr-duration" style="width:100%;"><option>1 week</option><option>2 weeks</option><option>1 month</option><option>3 months</option></select></div>
+                    </div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Channels</label>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <label style="font-size:13px;cursor:pointer;"><input type="checkbox" checked> LinkedIn Ads</label>
+                        <label style="font-size:13px;cursor:pointer;"><input type="checkbox" checked> Indeed Sponsored</label>
+                        <label style="font-size:13px;cursor:pointer;"><input type="checkbox"> Facebook Jobs</label>
+                        <label style="font-size:13px;cursor:pointer;"><input type="checkbox"> Twitter Promoted</label>
+                    </div></div>
+                </div>
+            `, 'Launch Campaign', () => {
+                const name = document.getElementById('mr-name').value;
+                if (!name) { showToast('Please enter a campaign name', 'error'); return; }
+                closeActionModal();
+                showToast('Recruitment campaign "' + name + '" launched!', 'success');
+            });
+        });
+
+        // ========== GENERIC BUTTON HANDLERS (Edit, Pause, Active, Disconnect, etc.) ==========
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.btn');
+            if (!btn || btn.id) return; // Skip buttons that already have specific handlers
+
+            const text = btn.textContent.trim();
+
+            if (text === 'Edit') {
+                const cardTitle = btn.closest('.card')?.querySelector('.card-title')?.textContent;
+                showToast('Editing "' + (cardTitle || 'item') + '"...', 'success');
+                openActionModal('Edit: ' + (cardTitle || 'Item'), `
+                    <div style="padding:20px 0;text-align:center;color:var(--text-muted);">
+                        <div style="font-size:32px;margin-bottom:12px;">✏️</div>
+                        <div>Editing "${cardTitle || 'item'}". Make your changes and save.</div>
+                    </div>
+                `, 'Save Changes', () => { closeActionModal(); showToast('Changes saved!', 'success'); });
+            } else if (text === 'Pause') {
+                btn.textContent = 'Active';
+                btn.style.color = 'var(--green)';
+                showToast('Automation paused', 'success');
+            } else if (text === 'Active') {
+                btn.textContent = 'Pause';
+                btn.style.color = '';
+                showToast('Automation activated', 'success');
+            } else if (text === 'Disconnect') {
+                const cardTitle = btn.closest('.card')?.querySelector('div[style*="font-weight: 600"]')?.textContent;
+                btn.textContent = 'Connect';
+                btn.className = 'btn btn-sm btn-primary';
+                const statusEl = btn.closest('.card')?.querySelector('div[style*="font-weight: 600"]');
+                if (statusEl) statusEl.textContent = 'Status: Disconnected';
+                showToast((cardTitle || 'Platform') + ' disconnected', 'success');
+            } else if (text === 'Connect' || text === 'Connect Account') {
+                const cardTitle = btn.closest('.card')?.querySelector('.card-title')?.textContent;
+                showToast('Connecting ' + (cardTitle || 'platform') + '...', 'success');
+                setTimeout(() => {
+                    btn.textContent = 'Disconnect';
+                    btn.className = 'btn btn-sm btn-secondary';
+                    btn.style.width = '100%';
+                    const statusEl = btn.closest('.card')?.querySelector('div[style*="font-weight: 600"]');
+                    if (statusEl) statusEl.textContent = 'Status: Connected ✓';
+                    showToast((cardTitle || 'Platform') + ' connected!', 'success');
+                }, 1500);
+            } else if (text === 'Manage') {
+                const cardTitle = btn.closest('.card')?.querySelector('.card-title')?.textContent;
+                showToast('Opening ' + (cardTitle || 'platform') + ' settings...', 'success');
+            } else if (text === 'Download') {
+                showToast('Download started!', 'success');
+            } else if (text === 'Generate Image' || text === 'Generate' || text === 'Create Video') {
+                const input = btn.closest('.card')?.querySelector('input, select');
+                if (input && !input.value) { showToast('Please enter a description first', 'error'); return; }
+                btn.textContent = 'Generating...';
+                btn.disabled = true;
+                setTimeout(() => {
+                    btn.textContent = text;
+                    btn.disabled = false;
+                    showToast(text === 'Create Video' ? 'Video created! Check Recent Generations.' : 'Image generated! Check Recent Generations.', 'success');
+                }, 2500);
+            }
+        });
 
         // ========== HAMBURGER MENU ==========
         const hamburger = document.getElementById('hamburger');
