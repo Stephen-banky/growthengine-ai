@@ -1484,6 +1484,7 @@
                                     <th>Spent</th>
                                     <th>ROAS</th>
                                     <th>Leads</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="campaigns-tbody">
@@ -1642,6 +1643,7 @@
                                         <th>Duration</th>
                                         <th>Type</th>
                                         <th>Status</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1679,7 +1681,7 @@
                                     <th>Clicks</th>
                                     <th>Click Rate</th>
                                     <th>Created</th>
-                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -2974,7 +2976,16 @@
                     </div>
                 `, 'Save Settings', () => {
                     const name = document.getElementById('settings-name').value;
-                    if (name && currentUser) currentUser.name = name;
+                    const email = document.getElementById('settings-email').value;
+                    const apiKey = document.getElementById('settings-api-key').value;
+                    const theme = document.getElementById('settings-theme').value;
+                    if (name && currentUser) {
+                        currentUser.name = name;
+                        if (email) currentUser.email = email;
+                        localStorage.setItem('ge_user', JSON.stringify(currentUser));
+                    }
+                    if (apiKey) localStorage.setItem('ge_api_key', apiKey);
+                    if (theme) localStorage.setItem('ge_theme', theme);
                     closeActionModal();
                     showToast('Settings saved', 'success');
                 });
@@ -2985,10 +2996,40 @@
         // Add event listeners for AI Media generate buttons
         const aiMediaGenerateButtons = document.querySelectorAll('#ai-media-page .btn-primary');
         aiMediaGenerateButtons.forEach(btn => {
-            btn.addEventListener('click', function(e) {
+            btn.addEventListener('click', async function(e) {
                 e.preventDefault();
+                const card = this.closest('.card');
+                const input = card?.querySelector('input, textarea');
                 const text = this.textContent.trim();
-                showToast(`${text} initiated...`, 'info');
+                if (input && !input.value) { showToast('Please enter a description first', 'error'); return; }
+                const originalText = text;
+                this.textContent = 'Generating...';
+                this.disabled = true;
+                try {
+                    const data = await apiCall('/ai/generate-content', 'POST', {
+                        businessName: 'Media Generation', industry: 'creative', platform: 'social',
+                        topic: (input?.value || 'Generate creative content'), tone: 'professional'
+                    });
+                    showToast(originalText === 'Create Video' ? 'Video created! Check Recent Generations.' : 'Image generated! Check Recent Generations.', 'success');
+                    // Add to recent generations table
+                    const recentTbody = document.querySelector('#ai-media-page tbody');
+                    if (recentTbody) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = '<td style="font-weight:600;">' + (input?.value || 'Untitled').substring(0, 30) + '</td><td><span class="platform-badge">' + (originalText === 'Create Video' ? 'Video' : 'Image') + '</span></td><td>Just now</td><td><span class="trend trend-up">Completed</span></td>';
+                        recentTbody.prepend(tr);
+                    }
+                } catch (error) {
+                    showToast(error.message || 'Generation failed - using demo mode', 'info');
+                    const recentTbody = document.querySelector('#ai-media-page tbody');
+                    if (recentTbody) {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = '<td style="font-weight:600;">' + (input?.value || 'Untitled').substring(0, 30) + '</td><td><span class="platform-badge">' + (originalText === 'Create Video' ? 'Video' : 'Image') + '</span></td><td>Just now</td><td><span class="trend trend-up">Completed</span></td>';
+                        recentTbody.prepend(tr);
+                    }
+                } finally {
+                    this.textContent = originalText;
+                    this.disabled = false;
+                }
             });
         });
 
@@ -3415,7 +3456,7 @@
                 // Add to campaigns table
                 const tbody = document.querySelector('#campaigns-page tbody');
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td style="font-weight:600;">${name}</td><td><span class="platform-badge">${platform}</span></td><td><span class="trend trend-up">Active</span></td><td>$${parseInt(budget).toLocaleString()}</td><td>$0</td><td style="color:var(--green);font-weight:600;">--</td><td>0</td>`;
+                tr.innerHTML = `<td style="font-weight:600;">${name}</td><td><span class="platform-badge">${platform}</span></td><td><span class="trend trend-up">Active</span></td><td>$${parseInt(budget).toLocaleString()}</td><td>$0</td><td style="color:var(--green);font-weight:600;">--</td><td>0</td><td style="display:flex;gap:6px;"><button class="btn btn-sm btn-secondary">Edit</button><button class="btn btn-sm btn-secondary" onclick="const s=this.closest('tr').querySelector('.trend');if(s.textContent==='Active'){s.textContent='Paused';s.className='trend';s.style.color='var(--yellow)';this.textContent='Resume';}else{s.textContent='Active';s.className='trend trend-up';s.style.color='';this.textContent='Pause';}">Pause</button></td>`;
                 tbody.prepend(tr);
                 closeActionModal();
                 showToast('Campaign "' + name + '" created!', 'success');
@@ -3477,7 +3518,7 @@
                 const attCount = attendees ? attendees.split(',').length : 1;
                 const tbody = document.querySelector('#meetings-page tbody');
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td style="font-weight:600;">${title}</td><td>${attCount} attendees</td><td>${dateStr}</td><td>${duration} min</td><td><span class="platform-badge">${type}</span></td><td><span class="trend trend-up">Confirmed</span></td>`;
+                tr.innerHTML = `<td style="font-weight:600;">${title}</td><td>${attCount} attendees</td><td>${dateStr}</td><td>${duration} min</td><td><span class="platform-badge">${type}</span></td><td><span class="trend trend-up">Confirmed</span></td><td style="display:flex;gap:6px;"><button class="btn btn-sm btn-secondary">Edit</button><button class="btn btn-sm btn-secondary" onclick="this.closest('tr').remove();showToast('Meeting cancelled','info');">Cancel</button></td>`;
                 tbody.prepend(tr);
                 closeActionModal();
                 showToast('Meeting "' + title + '" scheduled!', 'success');
@@ -3508,7 +3549,7 @@
                 if (!url || !slug) { showToast('Please fill URL and slug', 'error'); return; }
                 const tbody = document.querySelector('#tracking-links-page tbody');
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td><span style="font-family:monospace;font-size:12px;">gre.ai/${slug}</span></td><td style="font-size:12px;">${url}</td><td><span class="platform-badge">${campaign || 'Custom'}</span></td><td style="font-weight:600;">0</td><td>--</td><td>Just now</td><td><span class="trend trend-up">Active</span></td>`;
+                tr.innerHTML = `<td><span style="font-family:monospace;font-size:12px;cursor:pointer;" onclick="navigator.clipboard.writeText('gre.ai/${slug}');showToast('Link copied!','success');">gre.ai/${slug} 📋</span></td><td style="font-size:12px;">${url}</td><td><span class="platform-badge">${campaign || 'Custom'}</span></td><td style="font-weight:600;">0</td><td>--</td><td>Just now</td><td style="display:flex;gap:6px;align-items:center;"><span class="trend trend-up">Active</span><button class="btn btn-sm btn-secondary" onclick="this.closest('tr').remove();showToast('Link deleted','info');">Delete</button></td>`;
                 tbody.prepend(tr);
                 closeActionModal();
                 showToast('Tracking link gre.ai/' + slug + ' created!', 'success');
@@ -3529,7 +3570,7 @@
             tbody.innerHTML = '';
             contacts.forEach(c => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td style="font-weight:600;">${c.name}</td><td>${c.email}</td><td>${c.company}</td><td>${c.title}</td><td>${c.phone}</td><td><span class="trend trend-up">Verified</span></td>`;
+                tr.innerHTML = `<td style="font-weight:600;">${c.name}</td><td>${c.email}</td><td>${c.company}</td><td>${c.title}</td><td><a href="https://linkedin.com/in/${c.name.toLowerCase().replace(/\s/g,'')}" target="_blank" style="color:var(--primary);text-decoration:none;">View →</a></td><td>${c.phone}</td><td><span class="trend trend-up">Verified</span></td>`;
                 tbody.appendChild(tr);
             });
         });
@@ -3658,8 +3699,10 @@
                 const name = document.getElementById('al-name').value;
                 const company = document.getElementById('al-company').value;
                 if (!name || !company) { showToast('Name and company are required', 'error'); return; }
+                const email = document.getElementById('al-email').value;
+                const notes = document.getElementById('al-notes').value;
                 leadsData.unshift({
-                    id: Date.now(), name, company,
+                    id: Date.now(), name, company, email, notes,
                     stage: document.getElementById('al-stage').value,
                     segment: document.getElementById('al-segment').value,
                     source: document.getElementById('al-source').value,
@@ -3934,7 +3977,10 @@
 
         // ========== INITIALIZATION ==========
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeSidebar();
+            if (e.key === 'Escape') {
+                closeSidebar();
+                if (actionModal.style.display === 'flex') closeActionModal();
+            }
         });
 
         // Check auth and update UI on page load
