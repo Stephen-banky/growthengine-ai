@@ -1,9 +1,11 @@
 const router = require('express').Router();
 const { authenticateToken } = require('../middleware/auth');
+const { aiRateLimit } = require('../middleware/rateLimiter');
 const AIService = require('../services/aiService');
 const db = require('../../config/database');
 
 router.use(authenticateToken);
+router.use(aiRateLimit); // Protect expensive AI API calls
 
 // Helper: get business info or fallback defaults (handles in-memory DB reset in serverless)
 function getBusinessInfo(userId) {

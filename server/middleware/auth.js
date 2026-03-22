@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'growthengine-dev-secret';
+// SECURITY: No hardcoded fallback in production
+const JWT_SECRET = process.env.JWT_SECRET || (
+  process.env.NODE_ENV === 'production'
+    ? (() => { console.error('CRITICAL: JWT_SECRET not set in production!'); return 'INSECURE-CHANGE-ME'; })()
+    : 'growthengine-dev-secret-local-only'
+);
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
@@ -9,14 +14,20 @@ function authenticateToken(req, res, next) {
   if (!token) return res.status(401).json({ error: 'Access token required' });
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Invalid or expired token' });
+    if (err) {
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).json({ error: 'Token expired. Please log in again.', code: 'TOKEN_EXPIRED' });
+      }
+      return res.status(403).json({ error: 'Invalid token' });
+    }
     req.user = user;
     next();
   });
 }
 
 function generateToken(payload) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  // Session expires in 24 hours (not 7 days) for better security
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' });
 }
 
 module.exports = { authenticateToken, generateToken };
