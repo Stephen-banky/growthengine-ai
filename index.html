@@ -3440,8 +3440,18 @@
                 <div style="display:flex;flex-direction:column;gap:14px;">
                     <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Campaign Name</label>
                     <input type="text" id="mc-name" placeholder="e.g., Summer Sale Push" style="width:100%;"></div>
-                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Platform</label>
-                    <select id="mc-platform" style="width:100%;"><option value="">Select Platform</option><option>Facebook</option><option>Instagram</option><option>LinkedIn</option><option>Google Ads</option><option>TikTok</option><option>Twitter/X</option><option>Email</option><option>Multi-channel</option></select></div>
+                    <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Platforms <span style="font-weight:400;color:var(--text-muted);">(select one or more)</span></label>
+                    <div id="mc-platforms" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 10px;background:var(--bg-hover);border-radius:6px;border:1px solid var(--border);"><input type="checkbox" value="Facebook" style="width:auto;min-width:auto;margin:0;"> Facebook</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 10px;background:var(--bg-hover);border-radius:6px;border:1px solid var(--border);"><input type="checkbox" value="Instagram" style="width:auto;min-width:auto;margin:0;"> Instagram</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 10px;background:var(--bg-hover);border-radius:6px;border:1px solid var(--border);"><input type="checkbox" value="LinkedIn" style="width:auto;min-width:auto;margin:0;"> LinkedIn</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 10px;background:var(--bg-hover);border-radius:6px;border:1px solid var(--border);"><input type="checkbox" value="Google Ads" style="width:auto;min-width:auto;margin:0;"> Google Ads</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 10px;background:var(--bg-hover);border-radius:6px;border:1px solid var(--border);"><input type="checkbox" value="TikTok" style="width:auto;min-width:auto;margin:0;"> TikTok</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 10px;background:var(--bg-hover);border-radius:6px;border:1px solid var(--border);"><input type="checkbox" value="Twitter/X" style="width:auto;min-width:auto;margin:0;"> Twitter/X</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 10px;background:var(--bg-hover);border-radius:6px;border:1px solid var(--border);"><input type="checkbox" value="YouTube" style="width:auto;min-width:auto;margin:0;"> YouTube</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 10px;background:var(--bg-hover);border-radius:6px;border:1px solid var(--border);"><input type="checkbox" value="Email" style="width:auto;min-width:auto;margin:0;"> Email</label>
+                        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:8px 10px;background:var(--bg-hover);border-radius:6px;border:1px solid var(--border);"><input type="checkbox" value="WeChat" style="width:auto;min-width:auto;margin:0;"> WeChat</label>
+                    </div></div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                         <div><label style="font-size:13px;color:var(--text-muted);display:block;margin-bottom:6px;">Budget ($)</label>
                         <input type="number" id="mc-budget" placeholder="5000" style="width:100%;"></div>
@@ -3453,17 +3463,32 @@
                 </div>
             `, 'Create Campaign', () => {
                 const name = document.getElementById('mc-name').value;
-                const platform = document.getElementById('mc-platform').value;
+                const checked = [...document.querySelectorAll('#mc-platforms input[type="checkbox"]:checked')].map(c => c.value);
                 const budget = document.getElementById('mc-budget').value;
-                if (!name || !platform || !budget) { showToast('Please fill all required fields', 'error'); return; }
-                // Add to campaigns table
+                if (!name || checked.length === 0 || !budget) { showToast('Please fill campaign name, select at least one platform, and set a budget', 'error'); return; }
+                const platformBadges = checked.map(p => '<span class="platform-badge" style="margin:2px;">' + p + '</span>').join(' ');
                 const tbody = document.querySelector('#campaigns-page tbody');
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td style="font-weight:600;">${name}</td><td><span class="platform-badge">${platform}</span></td><td><span class="trend trend-up">Active</span></td><td>$${parseInt(budget).toLocaleString()}</td><td>$0</td><td style="color:var(--green);font-weight:600;">--</td><td>0</td><td style="display:flex;gap:6px;"><button class="btn btn-sm btn-secondary">Edit</button><button class="btn btn-sm btn-secondary" onclick="const s=this.closest('tr').querySelector('.trend');if(s.textContent==='Active'){s.textContent='Paused';s.className='trend';s.style.color='var(--yellow)';this.textContent='Resume';}else{s.textContent='Active';s.className='trend trend-up';s.style.color='';this.textContent='Pause';}">Pause</button></td>`;
+                tr.innerHTML = '<td style="font-weight:600;">' + name + '</td><td style="display:flex;flex-wrap:wrap;gap:4px;">' + platformBadges + '</td><td><span class="trend trend-up">Active</span></td><td>$' + parseInt(budget).toLocaleString() + '</td><td>$0</td><td style="color:var(--green);font-weight:600;">--</td><td>0</td><td style="display:flex;gap:6px;"><button class="btn btn-sm btn-secondary">Edit</button><button class="btn btn-sm btn-secondary" onclick="const s=this.closest(\'tr\').querySelector(\'.trend\');if(s.textContent===\'Active\'){s.textContent=\'Paused\';s.className=\'trend\';s.style.color=\'var(--yellow)\';this.textContent=\'Resume\';}else{s.textContent=\'Active\';s.className=\'trend trend-up\';s.style.color=\'\';this.textContent=\'Pause\';}">Pause</button></td>';
                 tbody.prepend(tr);
                 closeActionModal();
-                showToast('Campaign "' + name + '" created!', 'success');
+                showToast('Campaign "' + name + '" launched on ' + checked.join(', ') + '!', 'success');
             });
+            // Add checkbox highlight toggle
+            setTimeout(() => {
+                document.querySelectorAll('#mc-platforms input[type="checkbox"]').forEach(cb => {
+                    cb.addEventListener('change', function() {
+                        const lbl = this.closest('label');
+                        if (this.checked) {
+                            lbl.style.borderColor = 'var(--primary)';
+                            lbl.style.background = 'rgba(59,130,246,0.15)';
+                        } else {
+                            lbl.style.borderColor = 'var(--border)';
+                            lbl.style.background = 'var(--bg-hover)';
+                        }
+                    });
+                });
+            }, 50);
         });
 
         // ========== CREATE AUTOMATION ==========
