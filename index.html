@@ -1229,8 +1229,8 @@
             <div class="greeting" id="greeting">Good afternoon, Stephen</div>
         </div>
         <div class="topbar-right">
-            <button class="topbar-button">🔔</button>
-            <button class="topbar-button">⚙️</button>
+            <button class="topbar-button" id="notif-btn">🔔</button>
+            <button class="topbar-button" id="settings-btn">⚙️</button>
         </div>
     </div>
 
@@ -2066,30 +2066,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td style="font-weight: 600;">Spring Campaign Hero</td>
-                                    <td><span class="platform-badge">DALL-E 3</span></td>
-                                    <td>Image</td>
-                                    <td>2 hours ago</td>
-                                    <td><span class="trend trend-up">Ready</span></td>
-                                    <td><button class="btn btn-sm btn-secondary">Download</button></td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight: 600;">Product Demo Video</td>
-                                    <td><span class="platform-badge">HeyGen</span></td>
-                                    <td>Video</td>
-                                    <td>Yesterday</td>
-                                    <td><span class="trend trend-up">Ready</span></td>
-                                    <td><button class="btn btn-sm btn-secondary">Download</button></td>
-                                </tr>
-                                <tr>
-                                    <td style="font-weight: 600;">Social Media Banner</td>
-                                    <td><span class="platform-badge">Stable Diffusion</span></td>
-                                    <td>Image</td>
-                                    <td>3 days ago</td>
-                                    <td><span class="trend trend-up">Ready</span></td>
-                                    <td><button class="btn btn-sm btn-secondary">Download</button></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -2963,6 +2939,67 @@
         document.getElementById('score-lead-btn').addEventListener('click', scoreLead);
         document.getElementById('optimize-ad-btn').addEventListener('click', optimizeAd);
 
+        // ========== TOPBAR BUTTON HANDLERS ==========
+        // Notification bell
+        const notifBtn = document.getElementById('notif-btn');
+        if (notifBtn) {
+            notifBtn.addEventListener('click', () => {
+                openActionModal('Notifications', '<div style="text-align:center;color:var(--text-muted);padding:30px;"><div style="font-size:32px;margin-bottom:12px;">🔔</div><div>No new notifications</div><div style="font-size:13px;margin-top:8px;">You\'re all caught up!</div></div>', 'Close', () => closeActionModal());
+            });
+        }
+
+        // Settings button
+        const settingsBtn = document.getElementById('settings-btn');
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => {
+                openActionModal('Settings', `
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div>
+                            <label style="display:block;font-size:13px;color:var(--text-muted);margin-bottom:6px;">Display Name</label>
+                            <input type="text" id="settings-name" value="${currentUser ? currentUser.name : 'Stephen'}" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:13px;color:var(--text-muted);margin-bottom:6px;">Email</label>
+                            <input type="email" id="settings-email" value="${currentUser ? currentUser.email : ''}" style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:13px;color:var(--text-muted);margin-bottom:6px;">API Key (Claude)</label>
+                            <input type="password" id="settings-api-key" placeholder="sk-ant-..." style="width:100%;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:13px;color:var(--text-muted);margin-bottom:6px;">Theme</label>
+                            <select id="settings-theme" style="width:auto;"><option>Dark</option><option>Light</option></select>
+                        </div>
+                    </div>
+                `, 'Save Settings', () => {
+                    const name = document.getElementById('settings-name').value;
+                    if (name && currentUser) currentUser.name = name;
+                    closeActionModal();
+                    showToast('Settings saved', 'success');
+                });
+            });
+        }
+
+        // ========== AI MEDIA GENERATION BUTTONS ==========
+        // Add event listeners for AI Media generate buttons
+        const aiMediaGenerateButtons = document.querySelectorAll('#ai-media-page .btn-primary');
+        aiMediaGenerateButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const text = this.textContent.trim();
+                showToast(`${text} initiated...`, 'info');
+            });
+        });
+
+        // Add event listeners for AI Media download buttons
+        const aiMediaDownloadButtons = document.querySelectorAll('#ai-media-page .btn-secondary');
+        aiMediaDownloadButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showToast('Download started', 'success');
+            });
+        });
+
         // ========== LEADS CRM SYSTEM ==========
         let leadsData = [];
 
@@ -3798,11 +3835,22 @@
                 showToast('Automation activated', 'success');
             } else if (text === 'Disconnect') {
                 const cardTitle = btn.closest('.card')?.querySelector('div[style*="font-weight: 600"]')?.textContent;
-                btn.textContent = 'Connect';
+                btn.textContent = 'Connect Account';
                 btn.className = 'btn btn-sm btn-primary';
-                const statusEl = btn.closest('.card')?.querySelector('div[style*="font-weight: 600"]');
-                if (statusEl) statusEl.textContent = 'Status: Disconnected';
-                showToast((cardTitle || 'Platform') + ' disconnected', 'success');
+                btn.style.width = '100%';
+                const card = btn.closest('.card');
+                if (card) {
+                    const allDivs = card.querySelectorAll('div');
+                    allDivs.forEach(d => {
+                        if (d.textContent.includes('Connected') && !d.textContent.includes('Not')) {
+                            d.textContent = d.textContent.replace('Connected', 'Not connected').replace('✓', '');
+                        }
+                        if (d.textContent.match(/\d+ account/)) {
+                            d.textContent = 'No accounts connected';
+                        }
+                    });
+                }
+                showToast('Platform disconnected', 'info');
             } else if (text === 'Connect' || text === 'Connect Account') {
                 const cardTitle = btn.closest('.card')?.querySelector('.card-title')?.textContent;
                 showToast('Connecting ' + (cardTitle || 'platform') + '...', 'success');
@@ -3810,13 +3858,46 @@
                     btn.textContent = 'Disconnect';
                     btn.className = 'btn btn-sm btn-secondary';
                     btn.style.width = '100%';
-                    const statusEl = btn.closest('.card')?.querySelector('div[style*="font-weight: 600"]');
-                    if (statusEl) statusEl.textContent = 'Status: Connected ✓';
+                    const card = btn.closest('.card');
+                    if (card) {
+                        const allDivs = card.querySelectorAll('div');
+                        allDivs.forEach(d => {
+                            if (d.textContent.includes('Not connected') || d.textContent.includes('Pending')) {
+                                d.textContent = d.textContent.replace('Not connected', 'Connected').replace('Pending', 'Connected');
+                            }
+                            if (d.textContent.includes('No accounts connected')) {
+                                d.textContent = '1 account connected';
+                            }
+                            if (d.textContent.includes('Status:') && !d.textContent.includes('✓')) {
+                                d.textContent = d.textContent.replace('Status:', 'Status: Connected ✓').replace('Status: Connected ✓ Connected ✓', 'Status: Connected ✓');
+                            }
+                        });
+                    }
                     showToast((cardTitle || 'Platform') + ' connected!', 'success');
                 }, 1500);
             } else if (text === 'Manage') {
                 const cardTitle = btn.closest('.card')?.querySelector('.card-title')?.textContent;
-                showToast('Opening ' + (cardTitle || 'platform') + ' settings...', 'success');
+                openActionModal('Manage ' + (cardTitle || 'Platform'), `
+                    <div style="text-align:center;padding:20px;">
+                        <div style="font-size:32px;margin-bottom:12px;">⚙️</div>
+                        <div style="font-size:15px;margin-bottom:8px;">Platform Settings</div>
+                        <div style="color:var(--text-muted);font-size:13px;">Manage your ${cardTitle || 'platform'} integration settings and preferences.</div>
+                    </div>
+                `, 'Close', () => closeActionModal());
+            } else if (text === 'View Ads') {
+                const card = btn.closest('.card');
+                const compName = card ? (card.querySelector('div[style*="font-weight:700"]') || card.querySelector('.card-title')).textContent : 'Competitor';
+                openActionModal('Ad Intelligence: ' + compName, `
+                    <div style="text-align:center;padding:20px;">
+                        <div style="font-size:32px;margin-bottom:12px;">📊</div>
+                        <div style="font-size:15px;margin-bottom:8px;">Ad Tracking Dashboard</div>
+                        <div style="color:var(--text-muted);font-size:13px;">Competitor ad tracking will load real-time data when connected to ad platform APIs.</div>
+                    </div>
+                `, 'Close', () => closeActionModal());
+            } else if (text === 'Track') {
+                showToast('Competitor tracking enabled — monitoring ads, social, and content', 'success');
+                btn.textContent = 'Tracking ✓';
+                btn.style.color = 'var(--green)';
             } else if (text === 'Download') {
                 showToast('Download started!', 'success');
             } else if (text === 'Generate Image' || text === 'Generate' || text === 'Create Video') {
